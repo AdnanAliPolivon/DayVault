@@ -1,15 +1,17 @@
 /* ============================================================
    DAYVAULT — script.js
-   A functional front-end demo. All data lives in localStorage
-   under one key. Structure:
+   Functional front-end demo. All data lives in localStorage.
 
    1.  Helpers
-   2.  Data layer: seedData / loadData / saveData
+   2.  Data layer: seedData / loadData / saveData / migration
    3.  Render functions (one per card) + summary
-   4.  Form handlers (add / toggle / delete)
-   5.  Quick Add modal + jump shortcuts
-   6.  Scroll-reveal animations
-   7.  Boot
+   4.  Form handlers: expenses, tasks, projects, notes, diary,
+       documents, health, food, medications, fasting, events,
+       follow-ups
+   5.  Intelligent daily flow (generateDailyFlow)
+   6.  Quick Add modal + jump shortcuts
+   7.  Scroll-reveal animations
+   8.  Boot
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -18,22 +20,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const $  = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const pad = (n) => String(n).padStart(2, "0");
   const todayISO = () => {
     const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   };
+  // Format a Date for <input type="datetime-local">
+  const toLocalDT = (d) =>
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
   const euro = (n) => "€" + Number(n).toFixed(2);
   const niceDate = (iso) => {
     if (!iso) return "";
-    const d = new Date(iso + "T00:00:00");
+    const d = new Date(iso.length === 10 ? iso + "T00:00:00" : iso);
     return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+  };
+  const niceDT = (dt) => {
+    if (!dt) return "";
+    return new Date(dt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  };
+  // Hours+minutes from milliseconds → "16h 20m"
+  const fmtDur = (ms) => {
+    const h = Math.floor(ms / 3600000);
+    const m = Math.round((ms % 3600000) / 60000);
+    return `${h}h ${m}m`;
   };
   // Escape user text before inserting into innerHTML
   const esc = (s) => String(s ?? "")
     .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 
-  // After (re)rendering, grow progress bars from 0 to their target
+  // Grow [data-width] bars after a render
   function animateBars(scope) {
     requestAnimationFrame(() => requestAnimationFrame(() => {
       $$("[data-width]", scope).forEach((b) => { b.style.width = b.dataset.width; });
@@ -55,9 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ---------- 2. DATA LAYER ---------- */
   const DB_KEY = "dayvault-demo-v1";
 
-  // Demo content for first visit (and after reset)
   function seedData() {
     const t = todayISO();
+    const fastStart = new Date(Date.now() - 40 * 3600000); // a finished 16h fast
+    const fastEnd = new Date(Date.now() - 24 * 3600000);
     return {
       budget: { daily: 30 },
       expenses: [
@@ -98,7 +115,18 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: uid(), name: "Embassy-proof.jpg", type: "JPG", category: "Visa", note: "Appointment confirmation", date: t },
         { id: uid(), name: "Bank-transfer.png", type: "PNG", category: "Bank proof", note: "Deposit confirmation", date: t }
       ],
-      health: { date: t, sleep: "6h 20m", water: 1.8, energy: 7, workout: true, cigs: 0, symptoms: "None" },
+      health: { date: t, sleep: "6h 20m", water: 1.8, energy: 7, workout: true, cigs: 0, supps: "Vitamin D3, Magnesium", symptoms: "None" },
+      food: [
+        { id: uid(), name: "Oatmeal with banana", portion: "1 bowl", meal: "Breakfast", effect: "Light", date: t },
+        { id: uid(), name: "Chicken rice bowl", portion: "Regular", meal: "Lunch", effect: "Fine", date: t }
+      ],
+      meds: [
+        { id: uid(), name: "Vitamin D3", dose: "2000 IU", freq: "Once daily", start: t, end: "", notes: "With breakfast", done: false },
+        { id: uid(), name: "Magnesium", dose: "200 mg", freq: "Once daily", start: t, end: "", notes: "Before sleep", done: false }
+      ],
+      fasts: [
+        { id: uid(), type: "16/8", start: toLocalDT(fastStart), end: toLocalDT(fastEnd), notes: "Clear-headed by the end." }
+      ],
       events: [
         { id: uid(), title: "Embassy appointment", date: t, time: "10:00", type: "Appointment" },
         { id: uid(), title: "Thesis meeting", date: t, time: "14:00", type: "Meeting" },
@@ -114,10 +142,22 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // Patch older saved data so new features work without losing
+  // anything the user already entered.
+  function ensureShape(d) {
+    const defaults = seedData();
+    ["expenses","tasks","projects","notes","diary","docs","events","follows","food","meds","fasts"]
+      .forEach((k) => { if (!Array.isArray(d[k])) d[k] = (k === "food" || k === "meds" || k === "fasts") ? [] : defaults[k]; });
+    if (!d.budget || typeof d.budget.daily !== "number") d.budget = { daily: 30 };
+    if (!d.health) d.health = defaults.health;
+    if (d.health.supps === undefined) d.health.supps = "";
+    return d;
+  }
+
   function loadData() {
     try {
       const raw = localStorage.getItem(DB_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) return ensureShape(JSON.parse(raw));
     } catch (e) { /* corrupted storage → reseed */ }
     const fresh = seedData();
     localStorage.setItem(DB_KEY, JSON.stringify(fresh));
@@ -126,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function saveData() {
     localStorage.setItem(DB_KEY, JSON.stringify(db));
+    generateDailyFlow(); // the coach updates whenever data changes
   }
 
   let db = loadData();
@@ -150,11 +191,10 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#mSpent").textContent = euro(spent);
     $("#mBudget").textContent = euro(budget);
     $("#mRemaining").textContent = euro(remaining);
-    $("#mSaved").textContent = (remaining >= 0 ? "+" : "") + euro(Math.max(0, remaining)).slice(0);
+    $("#mSaved").textContent = "+" + euro(Math.max(0, remaining));
     $("#mWaste").textContent = euro(waste);
     $("#mPct").textContent = pct + "%";
 
-    // Budget mood: calm / careful / warning
     const fill = $("#budgetFill");
     const state = $("#budgetState");
     fill.classList.remove("state-warn", "state-danger");
@@ -164,7 +204,6 @@ document.addEventListener("DOMContentLoaded", () => {
     else { fill.classList.add("state-danger"); state.classList.add("tag-coral"); state.textContent = "Over the line"; }
     fill.dataset.width = Math.min(pct, 100) + "%";
 
-    // Category breakdown
     const totals = {};
     todays.forEach((e) => { totals[e.category] = (totals[e.category] || 0) + e.amount; });
     $("#catList").innerHTML = Object.entries(totals)
@@ -178,7 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
         </li>`;
       }).join("") || `<li class="empty-hint">No spending captured yet today.</li>`;
 
-    // Expense rows
     $("#expenseList").innerHTML = todays.slice().reverse().map((e) => `
       <li class="row-item" data-id="${e.id}">
         <div class="ri-main">
@@ -295,7 +333,7 @@ document.addEventListener("DOMContentLoaded", () => {
     flashNew($("#docList"));
   }
 
-  /* --- Health --- */
+  /* --- Health (snapshot is editable: form prefills today's values) --- */
   function renderHealth() {
     const h = db.health || {};
     const fresh = h.date === todayISO();
@@ -307,7 +345,118 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="h-stat"><span class="hs-label">Energy</span><strong>${h.energy ? esc(h.energy) + "/10" : "—"}</strong></div>
       <div class="h-stat"><span class="hs-label">Workout</span><strong>${h.workout ? "Done ✓" : "—"}</strong></div>
       <div class="h-stat"><span class="hs-label">Cigarettes</span><strong class="${Number(h.cigs) === 0 ? "text-green" : ""}">${h.cigs != null && h.cigs !== "" ? esc(h.cigs) : "—"}</strong></div>
+      <div class="h-stat"><span class="hs-label">Supps / meds</span><strong>${esc(h.supps || "—")}</strong></div>
       <div class="h-stat"><span class="hs-label">Symptoms</span><strong>${esc(h.symptoms || "None")}</strong></div>`;
+
+    // Prefill the form so today's snapshot can be edited, not retyped
+    $("#hSleep").value = h.sleep || "";
+    $("#hWater").value = h.water ?? "";
+    $("#hEnergy").value = h.energy ?? "";
+    $("#hCigs").value = h.cigs ?? "";
+    $("#hSupps").value = h.supps || "";
+    $("#hSymptoms").value = h.symptoms || "";
+    $("#hWorkout").checked = !!h.workout;
+  }
+
+  /* --- Food Diary --- */
+  function renderFood() {
+    const t = todayISO();
+    const effChip = (e) => e ? `<span class="eff eff-${esc(e.toLowerCase())}">${esc(e)}</span>` : "";
+    const row = (f) => `
+      <li class="row-item" data-id="${f.id}">
+        <span class="ri-kind meal-tag">${esc(f.meal)}</span>
+        <div class="ri-main">
+          <strong>${esc(f.name)}</strong>
+          <small>${niceDate(f.date)}${f.portion ? " · " + esc(f.portion) : ""}</small>
+        </div>
+        ${effChip(f.effect)}
+        <button class="ri-del" data-del aria-label="Delete food entry">×</button>
+      </li>`;
+
+    const todays = db.food.filter((f) => f.date === t);
+    const earlier = db.food.filter((f) => f.date !== t);
+
+    $("#foodList").innerHTML = todays.slice().reverse().map(row).join("")
+      || `<li class="empty-hint">No food entries yet. What did you eat today?</li>`;
+    $("#foodHistory").innerHTML = earlier.slice().reverse().map(row).join("")
+      || `<li class="empty-hint">No earlier entries.</li>`;
+    $("#foodCount").textContent = `${todays.length} today`;
+    flashNew($("#card-food"));
+  }
+
+  /* --- Medications & Supplements --- */
+  function renderMeds() {
+    const row = (m) => `
+      <li class="row-item${m.done ? " done" : ""}" data-id="${m.id}">
+        <input type="checkbox" class="fu-check med-done-btn" ${m.done ? "checked" : ""} aria-label="Mark completed" />
+        <div class="ri-main">
+          <strong>${esc(m.name)}${m.dose ? " · " + esc(m.dose) : ""}</strong>
+          <small>${esc(m.freq)} · ${m.end ? niceDate(m.start) + " → " + niceDate(m.end) : "ongoing since " + niceDate(m.start)}${m.notes ? " — " + esc(m.notes) : ""}</small>
+        </div>
+        <span class="ri-kind med-tag">${m.end ? "Course" : "Ongoing"}</span>
+        <button class="ri-del" data-del aria-label="Delete medication">×</button>
+      </li>`;
+
+    const active = db.meds.filter((m) => !m.done);
+    const completed = db.meds.filter((m) => m.done);
+    $("#medList").innerHTML = active.map(row).join("")
+      || `<li class="empty-hint">No medications tracked. Add one if you need the reminder.</li>`;
+    $("#medHistory").innerHTML = completed.map(row).join("")
+      || `<li class="empty-hint">Nothing completed yet.</li>`;
+    $("#medCount").textContent = `${active.length} active`;
+    flashNew($("#card-meds"));
+  }
+
+  /* --- Fasting Tracker --- */
+  // Target hours per fast type (used for the ongoing progress bar)
+  const FAST_TARGET = { "16/8": 16, "24-hour": 24, "Religious": 14, "Custom": 16 };
+
+  function renderFasting() {
+    const ongoing = db.fasts.find((f) => !f.end);
+
+    // Ongoing fast: live progress block
+    if (ongoing) {
+      const target = FAST_TARGET[ongoing.type] || 16;
+      const elapsed = Date.now() - new Date(ongoing.start).getTime();
+      const pct = Math.min(100, Math.round((elapsed / (target * 3600000)) * 100));
+      const endsAt = new Date(new Date(ongoing.start).getTime() + target * 3600000);
+      $("#fastNow").innerHTML = `
+        <div class="fast-now" data-id="${ongoing.id}">
+          <div class="fast-now-top">
+            <strong>${esc(ongoing.type)} fast — in progress</strong>
+            <span class="fast-elapsed">${fmtDur(Math.max(0, elapsed))}</span>
+          </div>
+          <div class="fast-track"><span class="fast-fill" data-width="${pct}%"></span></div>
+          <div class="fast-now-meta">
+            <span>${pct}% of ${target}h · ends ~${endsAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}</span>
+            <button class="end-fast-btn" id="endFastBtn" type="button">End fast now</button>
+          </div>
+        </div>`;
+      $("#fastTag").textContent = "Fasting now";
+      $("#fastTag").className = "card-tag tag-deep";
+    } else {
+      $("#fastNow").innerHTML = "";
+      $("#fastTag").textContent = db.fasts.length ? `${db.fasts.length} logged` : "—";
+      $("#fastTag").className = "card-tag tag-deep";
+    }
+
+    // Completed fasts with auto-calculated duration
+    const doneFasts = db.fasts.filter((f) => f.end);
+    $("#fastList").innerHTML = doneFasts.slice().reverse().map((f) => {
+      const dur = new Date(f.end) - new Date(f.start);
+      return `
+      <li class="row-item" data-id="${f.id}">
+        <span class="ri-kind fast-dur">${fmtDur(Math.max(0, dur))}</span>
+        <div class="ri-main">
+          <strong>${esc(f.type)}</strong>
+          <small>${niceDT(f.start)} → ${niceDT(f.end)}${f.notes ? " — " + esc(f.notes) : ""}</small>
+        </div>
+        <button class="ri-del" data-del aria-label="Delete fast">×</button>
+      </li>`;
+    }).join("") || `<li class="empty-hint">No fasts logged. Start when you're ready.</li>`;
+
+    animateBars($("#card-fasting"));
+    flashNew($("#card-fasting"));
   }
 
   /* --- Events --- */
@@ -352,26 +501,26 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#sumDiary").textContent = diaryToday ? "Saved ✓" : "Not yet";
     $("#sumDocs").textContent = db.docs.length;
 
-    // Daily clarity score: 5 simple signals × 20%
     let score = 0;
-    if (spent <= db.budget.daily) score += 20;                                   // budget intact
-    if (done > 0) score += 20;                                                   // momentum
-    if (db.health && db.health.date === t) score += 20;                          // body checked
-    if (diaryToday) score += 20;                                                 // day kept
-    if (db.projects.some((p) => p.next && p.status !== "Done")) score += 20;     // next step exists
+    if (spent <= db.budget.daily) score += 20;
+    if (done > 0) score += 20;
+    if (db.health && db.health.date === t) score += 20;
+    if (diaryToday) score += 20;
+    if (db.projects.some((p) => p.next && p.status !== "Done")) score += 20;
     $("#clarityScore").textContent = score + "%";
     $("#clarityRing").style.setProperty("--score", score);
   }
 
   function renderAll() {
     renderExpenses(); renderTasks(); renderProjects(); renderNotes();
-    renderDiary(); renderDocuments(); renderHealth(); renderEvents();
-    renderFollowUps(); renderSummary();
+    renderDiary(); renderDocuments(); renderHealth(); renderFood();
+    renderMeds(); renderFasting(); renderEvents(); renderFollowUps();
+    renderSummary(); generateDailyFlow();
   }
 
   /* ---------- 4. FORM HANDLERS & LIST ACTIONS ---------- */
 
-  /* --- Money: add expense --- */
+  /* --- Money --- */
   $("#expenseForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const amount = parseFloat($("#expAmount").value);
@@ -391,7 +540,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#expTitle").focus();
   });
 
-  // Delete expense (delegated)
   $("#expenseList").addEventListener("click", (e) => {
     if (!e.target.closest("[data-del]")) return;
     const id = e.target.closest("[data-id]").dataset.id;
@@ -399,7 +547,6 @@ document.addEventListener("DOMContentLoaded", () => {
     saveData(); renderExpenses(); renderSummary();
   });
 
-  /* --- Money: budget calculator --- */
   function recalcBudget() {
     const income = parseFloat($("#calcIncome").value) || 0;
     const fixed = parseFloat($("#calcFixed").value) || 0;
@@ -443,7 +590,6 @@ document.addEventListener("DOMContentLoaded", () => {
     $("#taskTitle").focus();
   });
 
-  // Toggle + delete (delegated across the three lists)
   $("#card-tasks").addEventListener("change", (e) => {
     if (!e.target.classList.contains("task-check")) return;
     const id = e.target.closest("[data-id]").dataset.id;
@@ -550,7 +696,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* --- Documents --- */
-  let pendingFile = null; // metadata of the chosen/dropped file
+  let pendingFile = null;
 
   function setPendingFile(file) {
     if (!file) return;
@@ -563,7 +709,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const dropZone = $("#dropZone");
   dropZone.addEventListener("click", (e) => {
-    // The label/input handles its own clicks; avoid double-open
     if (!e.target.closest(".choose-btn")) $("#fileInput").click();
   });
   dropZone.addEventListener("keydown", (e) => {
@@ -611,17 +756,129 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     db.health = {
       date: todayISO(),
-      sleep: $("#hSleep").value.trim() || db.health.sleep,
-      water: $("#hWater").value !== "" ? parseFloat($("#hWater").value) : db.health.water,
-      energy: $("#hEnergy").value !== "" ? parseInt($("#hEnergy").value, 10) : db.health.energy,
+      sleep: $("#hSleep").value.trim(),
+      water: $("#hWater").value !== "" ? parseFloat($("#hWater").value) : "",
+      energy: $("#hEnergy").value !== "" ? parseInt($("#hEnergy").value, 10) : "",
       workout: $("#hWorkout").checked,
-      cigs: $("#hCigs").value !== "" ? parseInt($("#hCigs").value, 10) : db.health.cigs,
+      cigs: $("#hCigs").value !== "" ? parseInt($("#hCigs").value, 10) : "",
+      supps: $("#hSupps").value.trim(),
       symptoms: $("#hSymptoms").value.trim() || "None"
     };
     saveData(); renderHealth(); renderSummary();
-    e.target.reset();
     e.target.closest("details").removeAttribute("open");
   });
+
+  /* --- Food Diary --- */
+  function saveFoodEntry(e) {
+    e.preventDefault();
+    const item = {
+      id: uid(),
+      name: $("#foodName").value.trim(),
+      portion: $("#foodPortion").value.trim(),
+      meal: $("#foodMeal").value,
+      effect: $("#foodEffect").value,
+      date: todayISO()
+    };
+    if (!item.name) return;
+    db.food.push(item);
+    lastAdded = item.id;
+    saveData(); renderFood();
+    e.target.reset();
+    $("#foodName").focus();
+  }
+  $("#foodForm").addEventListener("submit", saveFoodEntry);
+
+  $("#card-food").addEventListener("click", (e) => {
+    if (!e.target.closest("[data-del]")) return;
+    const id = e.target.closest("[data-id]").dataset.id;
+    db.food = db.food.filter((f) => f.id !== id);
+    saveData(); renderFood();
+  });
+
+  /* --- Medications & Supplements --- */
+  // "Ongoing" checkbox disables the end-date field
+  $("#medOngoing").addEventListener("change", () => {
+    $("#medEnd").disabled = $("#medOngoing").checked;
+    if ($("#medOngoing").checked) $("#medEnd").value = "";
+  });
+
+  function saveMedication(e) {
+    e.preventDefault();
+    const item = {
+      id: uid(),
+      name: $("#medName").value.trim(),
+      dose: $("#medDose").value.trim(),
+      freq: $("#medFreq").value,
+      start: $("#medStart").value || todayISO(),
+      end: $("#medOngoing").checked ? "" : $("#medEnd").value,
+      notes: $("#medNotes").value.trim(),
+      done: false
+    };
+    if (!item.name) return;
+    db.meds.push(item);
+    lastAdded = item.id;
+    saveData(); renderMeds();
+    e.target.reset();
+    $("#medOngoing").checked = true;
+    $("#medEnd").disabled = true;
+    $("#medStart").value = todayISO();
+  }
+  $("#medForm").addEventListener("submit", saveMedication);
+
+  $("#card-meds").addEventListener("change", (e) => {
+    if (!e.target.classList.contains("fu-check")) return;
+    const id = e.target.closest("[data-id]").dataset.id;
+    const m = db.meds.find((x) => x.id === id);
+    if (m) { m.done = e.target.checked; saveData(); renderMeds(); }
+  });
+  $("#card-meds").addEventListener("click", (e) => {
+    if (!e.target.closest("[data-del]")) return;
+    const id = e.target.closest("[data-id]").dataset.id;
+    db.meds = db.meds.filter((m) => m.id !== id);
+    saveData(); renderMeds();
+  });
+
+  /* --- Fasting Tracker --- */
+  function saveFast(e) {
+    e.preventDefault();
+    const start = $("#fastStart").value;
+    if (!start) return;
+    const end = $("#fastEnd").value;
+    if (end && new Date(end) <= new Date(start)) {
+      $("#fastEnd").setCustomValidity("End must be after start");
+      $("#fastEnd").reportValidity();
+      $("#fastEnd").setCustomValidity("");
+      return;
+    }
+    // Only one ongoing fast at a time
+    if (!end && db.fasts.some((f) => !f.end)) {
+      alert("You already have an ongoing fast. End it first.");
+      return;
+    }
+    const item = { id: uid(), type: $("#fastType").value, start, end, notes: $("#fastNotes").value.trim() };
+    db.fasts.push(item);
+    lastAdded = item.id;
+    saveData(); renderFasting();
+    e.target.reset();
+    $("#fastStart").value = toLocalDT(new Date());
+  }
+  $("#fastForm").addEventListener("submit", saveFast);
+
+  $("#card-fasting").addEventListener("click", (e) => {
+    // End the ongoing fast
+    if (e.target.id === "endFastBtn") {
+      const ongoing = db.fasts.find((f) => !f.end);
+      if (ongoing) { ongoing.end = toLocalDT(new Date()); saveData(); renderFasting(); }
+      return;
+    }
+    if (!e.target.closest("[data-del]")) return;
+    const id = e.target.closest("[data-id]").dataset.id;
+    db.fasts = db.fasts.filter((f) => f.id !== id);
+    saveData(); renderFasting();
+  });
+
+  // Refresh the ongoing-fast progress every minute
+  setInterval(() => { if (db.fasts.some((f) => !f.end)) renderFasting(); }, 60000);
 
   /* --- Events --- */
   $("#eventForm").addEventListener("submit", (e) => {
@@ -638,6 +895,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lastAdded = item.id;
     saveData(); renderEvents();
     e.target.reset();
+    $("#evDate").value = todayISO();
   });
   $("#eventList").addEventListener("click", (e) => {
     if (!e.target.closest("[data-del]")) return;
@@ -684,7 +942,89 @@ document.addEventListener("DOMContentLoaded", () => {
     renderAll();
   });
 
-  /* ---------- 5. QUICK ADD MODAL + JUMP SHORTCUTS ---------- */
+  /* ---------- 5. INTELLIGENT DAILY FLOW ----------
+     Reads tasks, events, money, food, meds, fasts, health,
+     diary, projects and follow-ups, and writes personalized
+     suggestions into the four timeline steps. Called on boot
+     and from saveData(), so it always reflects current data. */
+  function generateDailyFlow() {
+    const t = todayISO();
+    const morning = [], midday = [], evening = [], anytime = [];
+
+    /* — Morning: priorities, early anchors, health reminders — */
+    const musts = db.tasks.filter((x) => x.tier === "must" && !x.done);
+    if (musts.length) {
+      const names = musts.slice(0, 2).map((x) => `<strong>${esc(x.title)}</strong>`).join(" and ");
+      morning.push(`Start with ${names}${musts.length > 2 ? ` (+${musts.length - 2} more must-dos)` : ""}.`);
+    } else {
+      morning.push(`<span class="flow-good">All must-dos are done.</span> Pick one Should and make it today's win.`);
+    }
+    const earlyEv = db.events
+      .filter((e) => e.date === t && e.time && e.time < "12:00")
+      .sort((a, b) => a.time.localeCompare(b.time))[0];
+    if (earlyEv) morning.push(`<strong>${esc(earlyEv.time)}</strong> — ${esc(earlyEv.title)}. Leave buffer time.`);
+    const activeMeds = db.meds.filter((m) => !m.done);
+    if (activeMeds.length) {
+      morning.push(`Take your ${activeMeds.length === 1 ? `<strong>${esc(activeMeds[0].name)}</strong>` : `medication — <strong>${activeMeds.length} active</strong>`}.`);
+    }
+    morning.push("Drink a glass of water before the first coffee.");
+
+    /* — Midday: money capture, food diary, loose thoughts — */
+    const spent = db.expenses.filter((e) => e.date === t).reduce((s, e) => s + e.amount, 0);
+    midday.push(spent === 0
+      ? "No expenses captured yet — log lunch before it leaks."
+      : `<strong>${euro(spent)}</strong> captured so far. Keep the leaks visible.`);
+    const lunchLogged = db.food.some((f) => f.date === t && f.meal === "Lunch");
+    midday.push(lunchLogged
+      ? `<span class="flow-good">Lunch is in the Food Diary.</span> Note how it sat if you haven't.`
+      : "After lunch: add it to the Food Diary, with how it felt.");
+    midday.push("Any loose thoughts or links? Quick Capture takes five seconds.");
+
+    /* — Evening: projects, body, follow-ups — */
+    const stuck = db.projects.find((p) => p.status === "Stuck");
+    if (stuck) evening.push(`<strong>${esc(stuck.name)}</strong> is stuck — define one small next step.`);
+    const moving = db.projects.find((p) => p.status !== "Done" && p.next);
+    if (moving && (!stuck || moving.id !== stuck.id)) {
+      evening.push(`Project nudge: <strong>${esc(moving.name)}</strong> → ${esc(moving.next)}${moving.deadline && moving.deadline !== "—" ? ` (due ${esc(moving.deadline)})` : ""}.`);
+    }
+    if (!db.health || db.health.date !== t) {
+      evening.push("Body Signal isn't updated today — 30 seconds before bed.");
+    } else {
+      evening.push(`<span class="flow-good">Body Signal logged.</span> Add dinner to the Food Diary too.`);
+    }
+    const openFu = db.follows.filter((f) => !f.done);
+    if (openFu.length) {
+      evening.push(`<strong>${openFu.length} follow-up${openFu.length > 1 ? "s" : ""}</strong> still open — close one loop tonight (${esc(openFu[0].name)} first?).`);
+    }
+    if (!evening.length) evening.push("Everything's updated. Close the day lightly.");
+
+    /* — Anytime: fasting, diary, vault — */
+    const ongoingFast = db.fasts.find((f) => !f.end);
+    if (ongoingFast) {
+      const target = FAST_TARGET[ongoingFast.type] || 16;
+      const elapsed = Date.now() - new Date(ongoingFast.start).getTime();
+      const pct = Math.min(100, Math.round((elapsed / (target * 3600000)) * 100));
+      anytime.push(`Fasting: <strong>${fmtDur(Math.max(0, elapsed))}</strong> in — ${pct}% of your ${esc(ongoingFast.type)} target.`);
+    } else {
+      anytime.push("Starting a fast? Log it the moment it begins.");
+    }
+    anytime.push(db.diary.some((d) => d.date === t)
+      ? `<span class="flow-good">Today's diary is saved.</span> Add to it if the day surprises you.`
+      : "No diary entry yet — keep the day before it disappears.");
+    anytime.push("Got a receipt in your pocket? Vault it now, find it in March.");
+
+    /* Write into the timeline */
+    const put = (id, items) => {
+      const el = $(id);
+      if (el) el.innerHTML = items.map((s) => `<li>${s}</li>`).join("");
+    };
+    put("#flowMorning", morning);
+    put("#flowMidday", midday);
+    put("#flowEvening", evening);
+    put("#flowAnytime", anytime);
+  }
+
+  /* ---------- 6. QUICK ADD MODAL + JUMP SHORTCUTS ---------- */
   const overlay = $("#quickAddModal");
 
   function openModal() {
@@ -704,15 +1044,12 @@ document.addEventListener("DOMContentLoaded", () => {
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !overlay.hidden) closeModal(); });
 
-  // Any element with data-jump scrolls to its card, highlights it,
-  // and (optionally) focuses an input. Used by the shortcut strip,
-  // the modal options, and the mobile bottom nav.
   function jumpTo(targetSel, focusSel) {
     const target = $(targetSel);
     if (!target) return;
     target.scrollIntoView({ behavior: "smooth", block: targetSel.startsWith("#card-") ? "center" : "start" });
     target.classList.remove("card-highlight");
-    void target.offsetWidth; // restart the animation
+    void target.offsetWidth;
     target.classList.add("card-highlight");
     setTimeout(() => target.classList.remove("card-highlight"), 1100);
     if (focusSel) setTimeout(() => { const f = $(focusSel); if (f) f.focus({ preventScroll: true }); }, 650);
@@ -725,7 +1062,6 @@ document.addEventListener("DOMContentLoaded", () => {
     jumpTo(jumper.dataset.jump, jumper.dataset.focus);
   });
 
-  // Smooth scroll for plain anchor links (nav, hero, CTA)
   $$('a[href^="#"]').forEach((link) => {
     link.addEventListener("click", (e) => {
       const id = link.getAttribute("href");
@@ -737,7 +1073,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  /* ---------- 6. SCROLL-REVEAL ---------- */
+  /* ---------- 7. SCROLL-REVEAL ---------- */
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -750,8 +1086,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { threshold: 0.12 });
   $$(".reveal").forEach((el) => revealObserver.observe(el));
 
-  /* ---------- 7. BOOT ---------- */
-  // Default the event date picker to today for fast entry
+  /* ---------- 8. BOOT ---------- */
   $("#evDate").value = todayISO();
+  $("#medStart").value = todayISO();
+  $("#medEnd").disabled = true;          // "Ongoing" starts checked
+  $("#fastStart").value = toLocalDT(new Date());
   renderAll();
 });

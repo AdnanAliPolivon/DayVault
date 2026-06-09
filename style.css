@@ -26,6 +26,9 @@
   --purple: #7857d6;  --purple-soft: #efeafb;
   --teal: #178f8f;    --teal-soft: #e0f2f2;
   --rose: #c2566f;    --rose-soft: #f9e9ed;
+  --earth: #b06f33;   --earth-soft: #f7ecdf;   /* food diary — warm, earthy */
+  --lav: #7f6fc4;     --lav-soft: #edeaf8;     /* medications — calm lavender */
+  --deep: #2c4f9e;    --deep-soft: #e4eaf6;    /* fasting — serene deep blue */
 
   /* Surfaces & lines */
   --line: rgba(27, 36, 54, 0.09);
@@ -156,6 +159,9 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
 .ico-purple { background: var(--purple-soft); color: var(--purple); }
 .ico-teal   { background: var(--teal-soft);   color: var(--teal); }
 .ico-rose   { background: var(--rose-soft);   color: var(--rose); }
+.ico-earth  { background: var(--earth-soft);  color: var(--earth); }
+.ico-lav    { background: var(--lav-soft);    color: var(--lav); }
+.ico-deep   { background: var(--deep-soft);   color: var(--deep); }
 
 /* Bar fills */
 .bar-green { background: linear-gradient(90deg, #15b87f, var(--green)); }
@@ -349,24 +355,47 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
 .clarity-ring span { position: relative; font: 700 0.86rem var(--font-display); color: #fff; }
 
 /* ---------- 7. DASHBOARD GRID & CARD SYSTEM ---------- */
-/* Masonry via CSS columns: cards keep natural heights. */
-.dash-grid { columns: 3; column-gap: 22px; }
-.dash-grid .card { break-inside: avoid; margin-bottom: 22px; }
+/* Aligned grid: equal-height cards in tidy columns. Long content
+   scrolls INSIDE each card (.card-body) so the outer layout stays
+   calm and orderly. */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
 
 /* Shared card base */
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 600px;                       /* consistent height; body scrolls */
   overflow: hidden;
   background: var(--glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,0.85);
   border-radius: var(--r-lg);
-  padding: 22px;
+  padding: 24px;
   box-shadow: var(--shadow-sm);
   transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+
+/* Scrollable inner body with a subtle slim scrollbar */
+.card-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-right: -8px;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(27,36,54,0.18) transparent;
+}
+.card-body::-webkit-scrollbar { width: 5px; }
+.card-body::-webkit-scrollbar-track { background: transparent; }
+.card-body::-webkit-scrollbar-thumb { background: rgba(27,36,54,0.16); border-radius: 99px; }
+.card-body::-webkit-scrollbar-thumb:hover { background: rgba(27,36,54,0.3); }
 
 /* Personality: a thin gradient stripe along the card top */
 .card-stripe { position: absolute; top: 0; left: 0; right: 0; height: 4px; }
@@ -378,6 +407,9 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
 .stripe-teal   { background: linear-gradient(90deg, var(--teal), #3aafaf); }
 .stripe-sky    { background: linear-gradient(90deg, #4a90f5, #74c0fc); }
 .stripe-coral  { background: linear-gradient(90deg, var(--coral), var(--purple)); }
+.stripe-earth  { background: linear-gradient(90deg, var(--earth), #d29a5b); }
+.stripe-lav    { background: linear-gradient(90deg, var(--lav), #a99ade); }
+.stripe-deep   { background: linear-gradient(90deg, var(--deep), #5577c4); }
 
 .card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
 .head-text { flex: 1; min-width: 0; }
@@ -392,6 +424,9 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
 .tag-coral  { background: var(--coral-soft);  color: var(--coral); }
 .tag-purple { background: var(--purple-soft); color: var(--purple); }
 .tag-teal   { background: var(--teal-soft);   color: var(--teal); }
+.tag-earth  { background: var(--earth-soft);  color: var(--earth); }
+.tag-lav    { background: var(--lav-soft);    color: var(--lav); }
+.tag-deep   { background: var(--deep-soft);   color: var(--deep); }
 
 .card-nudge {
   margin-top: 14px;
@@ -723,6 +758,90 @@ select.input { appearance: none; cursor: pointer; }
 .ev-type.t-travel { background: var(--purple-soft); color: var(--purple); }
 .fu-check { width: 17px; height: 17px; accent-color: var(--green); cursor: pointer; flex-shrink: 0; }
 .row-item.done .ri-main strong { text-decoration: line-through; color: var(--ink-soft); }
+
+/* ---------- 16b. FOOD DIARY ---------- */
+/* Effect chips: how the meal sat */
+.eff {
+  font: 700 0.6rem var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.eff-light, .eff-fine { background: var(--green-soft); color: var(--green); }
+.eff-heavy            { background: var(--amber-soft); color: var(--amber); }
+.eff-bloated, .eff-acidic { background: var(--coral-soft); color: var(--coral); }
+.meal-tag { background: var(--earth-soft); color: var(--earth); }
+
+/* ---------- 16c. MEDICATIONS ---------- */
+.med-tag { background: var(--lav-soft); color: var(--lav); }
+.med-done-btn { accent-color: var(--lav); }
+
+/* ---------- 16d. FASTING TRACKER ---------- */
+.dt-label { display: flex; flex-direction: column; gap: 5px; font: 600 0.74rem var(--font-body); color: var(--ink-soft); }
+.dt-hint { font-weight: 400; font-style: italic; }
+.fast-now {
+  background: linear-gradient(135deg, var(--deep-soft), #eef2fb);
+  border: 1px solid rgba(44, 79, 158, 0.18);
+  border-radius: var(--r-md);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.fast-now-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.fast-now-top strong { font-family: var(--font-display); font-size: 0.92rem; color: var(--deep); }
+.fast-elapsed { font: 700 0.8rem var(--font-display); color: var(--deep); white-space: nowrap; }
+.fast-track { height: 9px; border-radius: 99px; background: rgba(255,255,255,0.8); overflow: hidden; }
+.fast-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--deep), #5577c4);
+  transition: width 1s var(--ease);
+}
+.fast-now-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 9px; font-size: 0.74rem; color: var(--ink-soft); }
+.end-fast-btn {
+  padding: 5px 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--deep);
+  color: #fff;
+  font: 600 0.72rem var(--font-body);
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+.end-fast-btn:hover { transform: translateY(-1px); filter: brightness(1.12); }
+.fast-dur { background: var(--deep-soft); color: var(--deep); }
+
+/* ---------- 16e. DIARY FORM BOX (form separated from entries) ---------- */
+.form-box {
+  background: rgba(255, 252, 246, 0.9);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 14px;
+}
+
+/* ---------- 16f. INTELLIGENT DAILY FLOW LIST ---------- */
+.flow-list { display: flex; flex-direction: column; gap: 8px; margin-top: 2px; }
+.flow-list li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.flow-list li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+}
+.flow-list li strong { font-weight: 600; }
+.flow-list .flow-good { color: var(--green); font-weight: 600; }
 
 /* ---------- 17. TIMELINE (daily flow) ---------- */
 .flow { background: linear-gradient(180deg, var(--ivory-2) -30%, var(--ivory) 35%); }
@@ -1059,7 +1178,7 @@ select.input { appearance: none; cursor: pointer; }
    23. RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
-  .dash-grid { columns: 2; }
+  .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 768px) {
@@ -1085,8 +1204,10 @@ select.input { appearance: none; cursor: pointer; }
   .shortcut-strip::-webkit-scrollbar { display: none; }
   .shortcut { flex-shrink: 0; }
 
-  /* Single-column everything */
-  .dash-grid { columns: 1; }
+  /* Single-column everything; cards grow naturally on mobile but
+     long lists stay capped so no card overwhelms the screen */
+  .dash-grid { grid-template-columns: 1fr; gap: 20px; }
+  .card { height: auto; max-height: 640px; }
   .psych-grid { grid-template-columns: 1fr 1fr; }
   .mobile-grid { grid-template-columns: 1fr; gap: 44px; }
   .phone { width: min(308px, 86vw); }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DayVault — a functional demo of a personal daily operating system. Track money, tasks, projects, diary, documents, health, deadlines and follow-ups in one calm dashboard." />
+  <meta name="description" content="DayVault — a functional demo of a personal daily operating system. Track money, tasks, projects, diary, documents, food, medications, fasting, health, deadlines and follow-ups in one calm dashboard." />
   <title>DayVault — Your everyday life, finally in one place.</title>
 
   <!-- Google Fonts: Sora (display) + Inter (body) -->
@@ -17,7 +17,6 @@
 
   <!-- ============================================================
        STICKY GLASS NAVIGATION
-       Logo · section links · Quick Add
   ============================================================ -->
   <header class="nav" id="top">
     <div class="nav-inner container">
@@ -32,7 +31,7 @@
         <a href="#card-money">Money</a>
         <a href="#card-projects">Projects</a>
         <a href="#card-diary">Diary</a>
-        <a href="#card-docs">Documents</a>
+        <a href="#card-docs">Vault</a>
       </nav>
       <button class="btn btn-primary btn-sm nav-cta" id="navQuickAdd" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -45,7 +44,6 @@
 
     <!-- ============================================================
          COMPACT HERO
-         Headline, promise, CTAs, mini preview + shortcut strip.
     ============================================================ -->
     <section class="hero">
       <div class="hero-glow glow-a" aria-hidden="true"></div>
@@ -55,7 +53,7 @@
         <div class="hero-copy reveal">
           <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> A calm daily operating system</p>
           <h1>Your everyday life,<br /><span class="text-gradient">finally in one place.</span></h1>
-          <p class="hero-sub">Money, tasks, projects, diary, health, deadlines, documents, and follow-ups — captured in one calm dashboard built for real life.</p>
+          <p class="hero-sub">Money, tasks, projects, diary, food, health, deadlines, documents, and follow-ups — captured in one calm dashboard built for real life.</p>
           <div class="hero-actions">
             <a href="#dashboard" class="btn btn-primary">
               Open Dashboard
@@ -100,7 +98,7 @@
         </div>
       </div>
 
-      <!-- Visible shortcut strip: each chip jumps to a card and focuses its input -->
+      <!-- Shortcut strip: jumps to a card and focuses its input -->
       <div class="container">
         <div class="shortcut-strip reveal" role="toolbar" aria-label="Quick shortcuts">
           <button type="button" class="shortcut" data-jump="#card-money" data-focus="#expTitle">+ Expense</button>
@@ -108,13 +106,18 @@
           <button type="button" class="shortcut" data-jump="#card-notes" data-focus="#noteText">+ Note</button>
           <button type="button" class="shortcut" data-jump="#card-projects" data-focus="#projName">+ Project</button>
           <button type="button" class="shortcut" data-jump="#card-diary" data-focus="#diaryDid">+ Diary</button>
-          <button type="button" class="shortcut" data-jump="#card-docs">+ Upload Receipt</button>
+          <button type="button" class="shortcut" data-jump="#card-food" data-focus="#foodName">+ Food</button>
+          <button type="button" class="shortcut" data-jump="#card-meds" data-focus="#medName">+ Meds</button>
+          <button type="button" class="shortcut" data-jump="#card-fasting" data-focus="#fastStart">+ Fast</button>
+          <button type="button" class="shortcut" data-jump="#card-docs">+ Receipt</button>
         </div>
       </div>
     </section>
 
     <!-- ============================================================
-         TODAY'S COMMAND CENTER — the functional dashboard
+         TODAY'S COMMAND CENTER
+         Equal-height grid; every card scrolls internally so the
+         outer layout stays calm and aligned.
     ============================================================ -->
     <section class="dashboard section" id="dashboard">
       <div class="container">
@@ -123,7 +126,7 @@
           <p>Capture the small things before they become stress.</p>
         </div>
 
-        <!-- Summary strip: live numbers + clarity score -->
+        <!-- Summary strip -->
         <div class="summary-strip reveal" aria-label="Today's summary">
           <div class="sum-item"><span class="sum-label">Spent today</span><strong id="sumSpent">€0.00</strong></div>
           <div class="sum-item"><span class="sum-label">Tasks done</span><strong id="sumTasks">0 / 0</strong></div>
@@ -152,71 +155,67 @@
               <span class="card-tag tag-green" id="budgetState">Calm</span>
             </header>
 
-            <!-- Live money stats -->
-            <div class="money-stats">
-              <div class="m-stat"><span class="m-label">Today spent</span><strong class="m-value" id="mSpent">€0.00</strong></div>
-              <div class="m-stat"><span class="m-label">Daily budget</span><strong class="m-value" id="mBudget">€0.00</strong></div>
-              <div class="m-stat"><span class="m-label">Remaining</span><strong class="m-value" id="mRemaining">€0.00</strong></div>
-              <div class="m-stat stat-green"><span class="m-label">Saved today</span><strong class="m-value" id="mSaved">€0.00</strong></div>
-              <div class="m-stat stat-coral"><span class="m-label">Waste</span><strong class="m-value" id="mWaste">€0.00</strong></div>
-              <div class="m-stat"><span class="m-label">Budget used</span><strong class="m-value" id="mPct">0%</strong></div>
-            </div>
-
-            <div class="budget-row">
-              <div class="budget-track"><span class="budget-fill" id="budgetFill"></span></div>
-            </div>
-
-            <!-- Category breakdown (rendered by JS) -->
-            <ul class="cat-list" id="catList"></ul>
-
-            <!-- Today's expense list (rendered by JS) -->
-            <h4 class="sub-title">Today's expenses</h4>
-            <ul class="row-list" id="expenseList"></ul>
-
-            <!-- Add expense form -->
-            <form class="card-form" id="expenseForm">
-              <input class="input" type="text" id="expTitle" placeholder="What did you buy?" required />
-              <div class="form-row">
-                <input class="input" type="number" id="expAmount" placeholder="€ 0.00" step="0.01" min="0.01" required />
-                <select class="input" id="expCategory" aria-label="Category">
-                  <option>Food</option><option>Transport</option><option>Coffee</option><option>Bills</option>
-                  <option>Shopping</option><option>Health</option><option>Travel</option><option>Other</option>
-                </select>
-                <select class="input" id="expKind" aria-label="Necessary or waste">
-                  <option value="necessary">Necessary</option>
-                  <option value="waste">Waste</option>
-                </select>
+            <div class="card-body">
+              <div class="money-stats">
+                <div class="m-stat"><span class="m-label">Today spent</span><strong class="m-value" id="mSpent">€0.00</strong></div>
+                <div class="m-stat"><span class="m-label">Daily budget</span><strong class="m-value" id="mBudget">€0.00</strong></div>
+                <div class="m-stat"><span class="m-label">Remaining</span><strong class="m-value" id="mRemaining">€0.00</strong></div>
+                <div class="m-stat stat-green"><span class="m-label">Saved today</span><strong class="m-value" id="mSaved">€0.00</strong></div>
+                <div class="m-stat stat-coral"><span class="m-label">Waste</span><strong class="m-value" id="mWaste">€0.00</strong></div>
+                <div class="m-stat"><span class="m-label">Budget used</span><strong class="m-value" id="mPct">0%</strong></div>
               </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Add Expense</button>
-            </form>
 
-            <!-- Daily budget calculator -->
-            <details class="mini-tool">
-              <summary>Daily budget calculator</summary>
-              <div class="tool-body">
-                <div class="form-row">
-                  <input class="input" type="number" id="calcIncome" placeholder="Monthly income €" min="0" />
-                  <input class="input" type="number" id="calcFixed" placeholder="Fixed costs €" min="0" />
-                </div>
-                <div class="form-row">
-                  <input class="input" type="number" id="calcGoal" placeholder="Saving goal €" min="0" />
-                  <input class="input" type="number" id="calcDays" placeholder="Days in month" min="1" max="31" value="30" />
-                </div>
-                <p class="calc-result" id="calcResult">Your daily flexible budget is €—.</p>
-                <button class="btn btn-ghost btn-sm btn-block" type="button" id="useCalcBtn">Use as today's budget</button>
+              <div class="budget-row">
+                <div class="budget-track"><span class="budget-fill" id="budgetFill"></span></div>
               </div>
-            </details>
 
-            <!-- Manual budget -->
-            <div class="form-row budget-set">
-              <input class="input" type="number" id="manualBudget" placeholder="Set today's budget €" step="0.5" min="1" />
-              <button class="btn btn-ghost btn-sm" type="button" id="setBudgetBtn">Set</button>
+              <ul class="cat-list" id="catList"></ul>
+
+              <form class="card-form" id="expenseForm">
+                <input class="input" type="text" id="expTitle" placeholder="What did you buy?" required />
+                <div class="form-row">
+                  <input class="input" type="number" id="expAmount" placeholder="€ 0.00" step="0.01" min="0.01" required />
+                  <select class="input" id="expCategory" aria-label="Category">
+                    <option>Food</option><option>Transport</option><option>Coffee</option><option>Bills</option>
+                    <option>Shopping</option><option>Health</option><option>Travel</option><option>Other</option>
+                  </select>
+                  <select class="input" id="expKind" aria-label="Necessary or waste">
+                    <option value="necessary">Necessary</option>
+                    <option value="waste">Waste</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Expense</button>
+              </form>
+
+              <h4 class="sub-title">Today's expenses</h4>
+              <ul class="row-list" id="expenseList"></ul>
+
+              <details class="mini-tool">
+                <summary>Daily budget calculator</summary>
+                <div class="tool-body">
+                  <div class="form-row">
+                    <input class="input" type="number" id="calcIncome" placeholder="Monthly income €" min="0" />
+                    <input class="input" type="number" id="calcFixed" placeholder="Fixed costs €" min="0" />
+                  </div>
+                  <div class="form-row">
+                    <input class="input" type="number" id="calcGoal" placeholder="Saving goal €" min="0" />
+                    <input class="input" type="number" id="calcDays" placeholder="Days in month" min="1" max="31" value="30" />
+                  </div>
+                  <p class="calc-result" id="calcResult">Your daily flexible budget is €—.</p>
+                  <button class="btn btn-ghost btn-sm btn-block" type="button" id="useCalcBtn">Use as today's budget</button>
+                </div>
+              </details>
+
+              <div class="form-row budget-set">
+                <input class="input" type="number" id="manualBudget" placeholder="Set today's budget €" step="0.5" min="1" />
+                <button class="btn btn-ghost btn-sm" type="button" id="setBudgetBtn">Set</button>
+              </div>
+
+              <p class="card-nudge">Awareness first. Control follows.</p>
             </div>
-
-            <p class="card-nudge">Awareness first. Control follows.</p>
           </article>
 
-          <!-- ====== B. PRIORITY STACK (TASKS) ====== -->
+          <!-- ====== B. PRIORITY STACK ====== -->
           <article class="card card-tasks reveal" id="card-tasks" aria-labelledby="tasks-title">
             <span class="card-stripe stripe-blue" aria-hidden="true"></span>
             <header class="card-head">
@@ -230,30 +229,31 @@
               <span class="card-tag tag-blue" id="taskCount">0 of 0</span>
             </header>
 
-            <!-- Add task form -->
-            <form class="card-form" id="taskForm">
-              <div class="form-row">
-                <input class="input" type="text" id="taskTitle" placeholder="What needs doing?" required />
-                <select class="input input-narrow" id="taskTier" aria-label="Priority">
-                  <option value="must">Must</option>
-                  <option value="should">Should</option>
-                  <option value="could">Could</option>
-                </select>
-              </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Add Task</button>
-            </form>
+            <div class="card-body">
+              <form class="card-form" id="taskForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="taskTitle" placeholder="What needs doing?" required />
+                  <select class="input input-narrow" id="taskTier" aria-label="Priority">
+                    <option value="must">Must</option>
+                    <option value="should">Should</option>
+                    <option value="could">Could</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Task</button>
+              </form>
 
-            <div class="task-group">
-              <h4 class="task-tier tier-must">Must do</h4>
-              <ul class="task-list" id="mustList"></ul>
-            </div>
-            <div class="task-group">
-              <h4 class="task-tier tier-should">Should do</h4>
-              <ul class="task-list" id="shouldList"></ul>
-            </div>
-            <div class="task-group">
-              <h4 class="task-tier tier-could">Could do</h4>
-              <ul class="task-list" id="couldList"></ul>
+              <div class="task-group">
+                <h4 class="task-tier tier-must">Must do</h4>
+                <ul class="task-list" id="mustList"></ul>
+              </div>
+              <div class="task-group">
+                <h4 class="task-tier tier-should">Should do</h4>
+                <ul class="task-list" id="shouldList"></ul>
+              </div>
+              <div class="task-group">
+                <h4 class="task-tier tier-could">Could do</h4>
+                <ul class="task-list" id="couldList"></ul>
+              </div>
             </div>
           </article>
 
@@ -271,28 +271,30 @@
               <span class="card-tag tag-purple" id="projCount">0 active</span>
             </header>
 
-            <ul class="proj-list" id="projectList"></ul>
+            <div class="card-body">
+              <ul class="proj-list" id="projectList"></ul>
 
-            <details class="mini-tool">
-              <summary>Add project</summary>
-              <form class="tool-body" id="projectForm">
-                <input class="input" type="text" id="projName" placeholder="Project name" required />
-                <div class="form-row">
-                  <input class="input" type="number" id="projProgress" placeholder="Progress %" min="0" max="100" value="0" />
-                  <select class="input" id="projStatus" aria-label="Status">
-                    <option>Moving</option><option>Stuck</option><option>Waiting</option><option>Done</option>
-                  </select>
-                </div>
-                <div class="form-row">
-                  <input class="input" type="text" id="projNext" placeholder="Next step" />
-                  <input class="input" type="text" id="projDeadline" placeholder="Deadline (e.g. Friday)" />
-                </div>
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Project</button>
-              </form>
-            </details>
+              <details class="mini-tool">
+                <summary>Add project</summary>
+                <form class="tool-body" id="projectForm">
+                  <input class="input" type="text" id="projName" placeholder="Project name" required />
+                  <div class="form-row">
+                    <input class="input" type="number" id="projProgress" placeholder="Progress %" min="0" max="100" value="0" />
+                    <select class="input" id="projStatus" aria-label="Status">
+                      <option>Moving</option><option>Stuck</option><option>Waiting</option><option>Done</option>
+                    </select>
+                  </div>
+                  <div class="form-row">
+                    <input class="input" type="text" id="projNext" placeholder="Next step" />
+                    <input class="input" type="text" id="projDeadline" placeholder="Deadline (e.g. Friday)" />
+                  </div>
+                  <button class="btn btn-primary btn-sm btn-block" type="submit">Add Project</button>
+                </form>
+              </details>
+            </div>
           </article>
 
-          <!-- ====== D. QUICK CAPTURE (NOTES) ====== -->
+          <!-- ====== D. QUICK CAPTURE ====== -->
           <article class="card card-notes reveal" id="card-notes" aria-labelledby="notes-title">
             <span class="card-stripe stripe-amber" aria-hidden="true"></span>
             <header class="card-head">
@@ -305,17 +307,19 @@
               </div>
             </header>
 
-            <form class="card-form" id="noteForm">
-              <div class="form-row">
-                <input class="input" type="text" id="noteText" placeholder="Catch it before it's gone…" required />
-                <select class="input input-narrow" id="noteKind" aria-label="Note type">
-                  <option>Idea</option><option>Address</option><option>Link</option><option>Reminder</option><option>Random</option>
-                </select>
-              </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Capture</button>
-            </form>
+            <div class="card-body">
+              <form class="card-form" id="noteForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="noteText" placeholder="Catch it before it's gone…" required />
+                  <select class="input input-narrow" id="noteKind" aria-label="Note type">
+                    <option>Idea</option><option>Address</option><option>Link</option><option>Reminder</option><option>Random</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Capture</button>
+              </form>
 
-            <ul class="row-list" id="notesList"></ul>
+              <ul class="row-list" id="notesList"></ul>
+            </div>
           </article>
 
           <!-- ====== E. DAILY DIARY ====== -->
@@ -331,24 +335,28 @@
               </div>
             </header>
 
-            <form class="card-form diary-form" id="diaryForm">
-              <input class="input" type="text" id="diaryDid" placeholder="Today I did…" required />
-              <input class="input" type="text" id="diaryFelt" placeholder="I felt…" />
-              <input class="input" type="text" id="diaryFix" placeholder="One thing to fix tomorrow…" />
-              <div class="mood-row" role="radiogroup" aria-label="Mood">
-                <button type="button" class="mood-btn" data-mood="Calm">🌿 Calm</button>
-                <button type="button" class="mood-btn" data-mood="Focused">🎯 Focused</button>
-                <button type="button" class="mood-btn" data-mood="Tired">🌙 Tired</button>
-                <button type="button" class="mood-btn" data-mood="Stressed">⛈️ Stressed</button>
-                <button type="button" class="mood-btn" data-mood="Grateful">🙏 Grateful</button>
-              </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Save Entry</button>
-            </form>
+            <div class="card-body">
+              <!-- Form sits in its own framed box, separated from entries -->
+              <form class="card-form form-box" id="diaryForm">
+                <input class="input" type="text" id="diaryDid" placeholder="Today I did…" required />
+                <input class="input" type="text" id="diaryFelt" placeholder="I felt…" />
+                <input class="input" type="text" id="diaryFix" placeholder="One thing to fix tomorrow…" />
+                <div class="mood-row" role="radiogroup" aria-label="Mood">
+                  <button type="button" class="mood-btn" data-mood="Calm">🌿 Calm</button>
+                  <button type="button" class="mood-btn" data-mood="Focused">🎯 Focused</button>
+                  <button type="button" class="mood-btn" data-mood="Tired">🌙 Tired</button>
+                  <button type="button" class="mood-btn" data-mood="Stressed">⛈️ Stressed</button>
+                  <button type="button" class="mood-btn" data-mood="Grateful">🙏 Grateful</button>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Save Entry</button>
+              </form>
 
-            <div class="diary-entries" id="diaryList"></div>
+              <h4 class="sub-title">Past entries</h4>
+              <div class="diary-entries" id="diaryList"></div>
+            </div>
           </article>
 
-          <!-- ====== F. VAULT & RECEIPTS (DOCUMENTS) ====== -->
+          <!-- ====== F. VAULT & RECEIPTS ====== -->
           <article class="card card-docs reveal" id="card-docs" aria-labelledby="docs-title">
             <span class="card-stripe stripe-teal" aria-hidden="true"></span>
             <header class="card-head">
@@ -362,42 +370,43 @@
               <span class="card-tag tag-teal" id="docCount">0</span>
             </header>
 
-            <!-- Upload UI (demo: metadata only, no real upload) -->
-            <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Drag and drop a file or choose one">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
-              <p><strong>Drag &amp; drop</strong> a file here, or</p>
-              <label class="btn btn-ghost btn-sm choose-btn">
-                Choose file
-                <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" hidden />
-              </label>
-              <small class="file-chosen" id="fileChosen"></small>
+            <div class="card-body">
+              <div class="dropzone" id="dropZone" tabindex="0" role="button" aria-label="Drag and drop a file or choose one">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/></svg>
+                <p><strong>Drag &amp; drop</strong> a file here, or</p>
+                <label class="btn btn-ghost btn-sm choose-btn">
+                  Choose file
+                  <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" hidden />
+                </label>
+                <small class="file-chosen" id="fileChosen"></small>
+              </div>
+
+              <div class="form-row">
+                <select class="input" id="docCategory" aria-label="Document category">
+                  <option>Passport</option><option>Visa</option><option>Rent</option><option>Insurance</option>
+                  <option>Ticket</option><option>Receipt</option><option>Bank proof</option><option>University</option><option>Other</option>
+                </select>
+                <input class="input" type="text" id="docNote" placeholder="What is this document for?" />
+              </div>
+              <button class="btn btn-primary btn-sm btn-block" type="button" id="addDocBtn">Save to Vault</button>
+
+              <h4 class="sub-title">Stored documents</h4>
+              <div class="form-row vault-search">
+                <input class="input" type="search" id="docSearch" placeholder="Search vault…" />
+                <select class="input input-narrow" id="docFilter" aria-label="Filter by category">
+                  <option value="">All</option>
+                  <option>Passport</option><option>Visa</option><option>Rent</option><option>Insurance</option>
+                  <option>Ticket</option><option>Receipt</option><option>Bank proof</option><option>University</option><option>Other</option>
+                </select>
+              </div>
+
+              <ul class="row-list" id="docList"></ul>
+
+              <p class="demo-note">Demo only: files are not uploaded to a server.</p>
             </div>
-
-            <div class="form-row">
-              <select class="input" id="docCategory" aria-label="Document category">
-                <option>Passport</option><option>Visa</option><option>Rent</option><option>Insurance</option>
-                <option>Ticket</option><option>Receipt</option><option>Bank proof</option><option>University</option><option>Other</option>
-              </select>
-              <input class="input" type="text" id="docNote" placeholder="What is this document for?" />
-            </div>
-            <button class="btn btn-primary btn-sm btn-block" type="button" id="addDocBtn">Save to Vault</button>
-
-            <!-- Search + filter -->
-            <div class="form-row vault-search">
-              <input class="input" type="search" id="docSearch" placeholder="Search vault…" />
-              <select class="input input-narrow" id="docFilter" aria-label="Filter by category">
-                <option value="">All</option>
-                <option>Passport</option><option>Visa</option><option>Rent</option><option>Insurance</option>
-                <option>Ticket</option><option>Receipt</option><option>Bank proof</option><option>University</option><option>Other</option>
-              </select>
-            </div>
-
-            <ul class="row-list" id="docList"></ul>
-
-            <p class="demo-note">Demo only: files are not uploaded to a server.</p>
           </article>
 
-          <!-- ====== G. BODY SIGNAL (HEALTH) ====== -->
+          <!-- ====== G. BODY SIGNAL ====== -->
           <article class="card card-health reveal" id="card-health" aria-labelledby="health-title">
             <span class="card-stripe stripe-green" aria-hidden="true"></span>
             <header class="card-head">
@@ -411,28 +420,151 @@
               <span class="card-tag tag-green" id="healthTag">—</span>
             </header>
 
-            <!-- Current snapshot (rendered by JS) -->
-            <div class="health-grid" id="healthSnap"></div>
+            <div class="card-body">
+              <div class="health-grid" id="healthSnap"></div>
 
-            <details class="mini-tool">
-              <summary>Update today's snapshot</summary>
-              <form class="tool-body" id="healthForm">
-                <div class="form-row">
-                  <input class="input" type="text" id="hSleep" placeholder="Sleep (e.g. 6h 20m)" />
-                  <input class="input" type="number" id="hWater" placeholder="Water (L)" step="0.1" min="0" />
-                </div>
-                <div class="form-row">
-                  <input class="input" type="number" id="hEnergy" placeholder="Energy 1–10" min="1" max="10" />
-                  <input class="input" type="number" id="hCigs" placeholder="Cigarettes" min="0" />
-                </div>
-                <input class="input" type="text" id="hSymptoms" placeholder="Symptoms (or none)" />
-                <label class="check-row"><input type="checkbox" id="hWorkout" /> Workout done today</label>
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Save Snapshot</button>
-              </form>
-            </details>
+              <!-- Form prefills with today's values so the snapshot is editable -->
+              <details class="mini-tool">
+                <summary>Update / edit today's snapshot</summary>
+                <form class="tool-body" id="healthForm">
+                  <div class="form-row">
+                    <input class="input" type="text" id="hSleep" placeholder="Sleep (e.g. 6h 20m)" />
+                    <input class="input" type="number" id="hWater" placeholder="Water (L)" step="0.1" min="0" />
+                  </div>
+                  <div class="form-row">
+                    <input class="input" type="number" id="hEnergy" placeholder="Energy 1–10" min="1" max="10" />
+                    <input class="input" type="number" id="hCigs" placeholder="Cigarettes" min="0" />
+                  </div>
+                  <input class="input" type="text" id="hSupps" placeholder="Supplements / medicine taken (optional)" />
+                  <input class="input" type="text" id="hSymptoms" placeholder="Symptoms (or none)" />
+                  <label class="check-row"><input type="checkbox" id="hWorkout" /> Workout done today</label>
+                  <button class="btn btn-primary btn-sm btn-block" type="submit">Save Snapshot</button>
+                </form>
+              </details>
+            </div>
           </article>
 
-          <!-- ====== H. TIME ANCHORS (CALENDAR) ====== -->
+          <!-- ====== H. FOOD DIARY ====== -->
+          <article class="card card-food reveal" id="card-food" aria-labelledby="food-title">
+            <span class="card-stripe stripe-earth" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-earth" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M5 11l1.2 8.4A2 2 0 0 0 8.2 21h7.6a2 2 0 0 0 2-1.6L19 11"/><path d="M12 11V7a3 3 0 0 1 3-3h0"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="food-title">Food Diary</h3>
+                <small class="micro">Your stomach keeps better notes than you do.</small>
+              </div>
+              <span class="card-tag tag-earth" id="foodCount">0 today</span>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="foodForm">
+                <input class="input" type="text" id="foodName" placeholder="What did you eat?" required />
+                <div class="form-row">
+                  <input class="input" type="text" id="foodPortion" placeholder="Portion (e.g. 1 bowl)" />
+                  <select class="input input-narrow" id="foodMeal" aria-label="Meal">
+                    <option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option>
+                  </select>
+                </div>
+                <select class="input" id="foodEffect" aria-label="How did it sit?">
+                  <option value="">How did it sit? (optional)</option>
+                  <option>Light</option><option>Fine</option><option>Heavy</option><option>Bloated</option><option>Acidic</option>
+                </select>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Food</button>
+              </form>
+
+              <h4 class="sub-title">Today</h4>
+              <ul class="row-list" id="foodList"></ul>
+
+              <details class="mini-tool" id="foodHistoryWrap">
+                <summary>Earlier entries</summary>
+                <ul class="row-list tool-body" id="foodHistory"></ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- ====== I. MEDICATIONS & SUPPLEMENTS ====== -->
+          <article class="card card-meds reveal" id="card-meds" aria-labelledby="meds-title">
+            <span class="card-stripe stripe-lav" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-lav" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="13" height="7" rx="3.5" transform="rotate(-45 9 12)"/><path d="M8.5 8.5l7 7"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="meds-title">Medications &amp; Supplements</h3>
+                <small class="micro">Consistency is the whole medicine.</small>
+              </div>
+              <span class="card-tag tag-lav" id="medCount">0 active</span>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="medForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="medName" placeholder="Name (e.g. Vitamin D3)" required />
+                  <input class="input" type="text" id="medDose" placeholder="Dosage (e.g. 2000 IU)" />
+                </div>
+                <div class="form-row">
+                  <select class="input" id="medFreq" aria-label="Frequency">
+                    <option>Once daily</option><option>Twice daily</option><option>3× daily</option>
+                    <option>Weekly</option><option>As needed</option>
+                  </select>
+                  <input class="input" type="date" id="medStart" aria-label="Start date" />
+                </div>
+                <div class="form-row">
+                  <input class="input" type="date" id="medEnd" aria-label="End date" />
+                  <label class="check-row"><input type="checkbox" id="medOngoing" checked /> Ongoing</label>
+                </div>
+                <input class="input" type="text" id="medNotes" placeholder="Notes (optional)" />
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Medication</button>
+              </form>
+
+              <h4 class="sub-title">Active</h4>
+              <ul class="row-list" id="medList"></ul>
+
+              <details class="mini-tool" id="medHistoryWrap">
+                <summary>Completed</summary>
+                <ul class="row-list tool-body" id="medHistory"></ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- ====== J. FASTING TRACKER ====== -->
+          <article class="card card-fasting reveal" id="card-fasting" aria-labelledby="fast-title">
+            <span class="card-stripe stripe-deep" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-deep" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-3 2"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="fast-title">Fasting Tracker</h3>
+                <small class="micro">Stillness is also a practice.</small>
+              </div>
+              <span class="card-tag tag-deep" id="fastTag">—</span>
+            </header>
+
+            <div class="card-body">
+              <!-- Ongoing fast progress renders here -->
+              <div id="fastNow"></div>
+
+              <form class="card-form" id="fastForm">
+                <div class="form-row">
+                  <select class="input" id="fastType" aria-label="Fasting type">
+                    <option>16/8</option><option>24-hour</option><option>Religious</option><option>Custom</option>
+                  </select>
+                </div>
+                <label class="dt-label">Start<input class="input" type="datetime-local" id="fastStart" /></label>
+                <label class="dt-label">End <span class="dt-hint">(leave empty if ongoing)</span><input class="input" type="datetime-local" id="fastEnd" /></label>
+                <input class="input" type="text" id="fastNotes" placeholder="How did it feel? (optional)" />
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Log Fast</button>
+              </form>
+
+              <h4 class="sub-title">Recent fasts</h4>
+              <ul class="row-list" id="fastList"></ul>
+            </div>
+          </article>
+
+          <!-- ====== K. TIME ANCHORS ====== -->
           <article class="card card-calendar reveal" id="card-calendar" aria-labelledby="cal-title">
             <span class="card-stripe stripe-sky" aria-hidden="true"></span>
             <header class="card-head">
@@ -445,23 +577,25 @@
               </div>
             </header>
 
-            <form class="card-form" id="eventForm">
-              <input class="input" type="text" id="evTitle" placeholder="Event title" required />
-              <div class="form-row">
-                <input class="input" type="date" id="evDate" required />
-                <input class="input" type="time" id="evTime" />
-                <select class="input input-narrow" id="evType" aria-label="Event type">
-                  <option>Appointment</option><option>Bill</option><option>Class</option>
-                  <option>Meeting</option><option>Travel</option><option>Deadline</option>
-                </select>
-              </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Add Event</button>
-            </form>
+            <div class="card-body">
+              <form class="card-form" id="eventForm">
+                <input class="input" type="text" id="evTitle" placeholder="Event title" required />
+                <div class="form-row">
+                  <input class="input" type="date" id="evDate" required />
+                  <input class="input" type="time" id="evTime" />
+                  <select class="input input-narrow" id="evType" aria-label="Event type">
+                    <option>Appointment</option><option>Bill</option><option>Class</option>
+                    <option>Meeting</option><option>Travel</option><option>Deadline</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Event</button>
+              </form>
 
-            <ul class="row-list" id="eventList"></ul>
+              <ul class="row-list" id="eventList"></ul>
+            </div>
           </article>
 
-          <!-- ====== I. PEOPLE LOOP (FOLLOW-UPS) ====== -->
+          <!-- ====== L. PEOPLE LOOP ====== -->
           <article class="card card-people reveal" id="card-people" aria-labelledby="people-title">
             <span class="card-stripe stripe-coral" aria-hidden="true"></span>
             <header class="card-head">
@@ -474,21 +608,23 @@
               </div>
             </header>
 
-            <form class="card-form" id="followForm">
-              <div class="form-row">
-                <input class="input" type="text" id="fuName" placeholder="Who?" required />
-                <select class="input input-narrow" id="fuType" aria-label="Follow-up type">
-                  <option>Call</option><option>Message</option><option>Thank you</option><option>Promise</option><option>Networking</option>
-                </select>
-              </div>
-              <div class="form-row">
-                <input class="input" type="text" id="fuReason" placeholder="About what?" />
-                <input class="input" type="date" id="fuDue" aria-label="Due date" />
-              </div>
-              <button class="btn btn-primary btn-sm btn-block" type="submit">Add Follow-up</button>
-            </form>
+            <div class="card-body">
+              <form class="card-form" id="followForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="fuName" placeholder="Who?" required />
+                  <select class="input input-narrow" id="fuType" aria-label="Follow-up type">
+                    <option>Call</option><option>Message</option><option>Thank you</option><option>Promise</option><option>Networking</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <input class="input" type="text" id="fuReason" placeholder="About what?" />
+                  <input class="input" type="date" id="fuDue" aria-label="Due date" />
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Follow-up</button>
+              </form>
 
-            <ul class="row-list" id="followList"></ul>
+              <ul class="row-list" id="followList"></ul>
+            </div>
           </article>
 
         </div>
@@ -496,38 +632,39 @@
     </section>
 
     <!-- ============================================================
-         DAILY FLOW — vertical timeline (compact)
+         HOW YOUR DAY FLOWS — intelligent, data-driven
+         JS (generateDailyFlow) fills each step from your own cards.
     ============================================================ -->
     <section class="flow section" id="flow">
       <div class="container">
         <div class="section-head reveal">
           <h2>How your day flows</h2>
-          <p>Four light touches a day. No hour-long reviews. No guilt.</p>
+          <p>Not generic advice — these steps are built from your own data and update as you capture.</p>
         </div>
         <ol class="timeline">
           <li class="t-step reveal">
             <span class="t-node node-amber" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
             </span>
-            <div class="t-card"><span class="t-time">Morning</span><p>Choose your must-do tasks and check today's money limit.</p></div>
+            <div class="t-card"><span class="t-time">Morning</span><ul class="flow-list" id="flowMorning"></ul></div>
           </li>
           <li class="t-step reveal">
             <span class="t-node node-blue" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
             </span>
-            <div class="t-card"><span class="t-time">Midday</span><p>Capture spending, notes, and unexpected tasks before they disappear.</p></div>
+            <div class="t-card"><span class="t-time">Midday</span><ul class="flow-list" id="flowMidday"></ul></div>
           </li>
           <li class="t-step reveal">
             <span class="t-node node-purple" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
             </span>
-            <div class="t-card"><span class="t-time">Evening</span><p>Update projects, habits, health, diary, and tomorrow's deadlines.</p></div>
+            <div class="t-card"><span class="t-time">Evening</span><ul class="flow-list" id="flowEvening"></ul></div>
           </li>
           <li class="t-step reveal">
             <span class="t-node node-green" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
             </span>
-            <div class="t-card"><span class="t-time">Anytime</span><p>Save documents, receipts, addresses, and follow-ups in seconds.</p></div>
+            <div class="t-card"><span class="t-time">Anytime</span><ul class="flow-list" id="flowAnytime"></ul></div>
           </li>
         </ol>
       </div>
@@ -568,7 +705,7 @@
     </section>
 
     <!-- ============================================================
-         MOBILE PREVIEW — phone mockup
+         MOBILE PREVIEW
     ============================================================ -->
     <section class="mobile section" id="mobile">
       <div class="container mobile-grid">
@@ -635,7 +772,7 @@
   </main>
 
   <!-- ============================================================
-       FOOTER (with demo data reset)
+       FOOTER
   ============================================================ -->
   <footer class="footer">
     <div class="container footer-inner">
@@ -653,7 +790,6 @@
 
   <!-- ============================================================
        FLOATING QUICK ADD + MODAL
-       Options scroll to the matching card and highlight it.
   ============================================================ -->
   <button class="fab" id="quickAddBtn" type="button" aria-haspopup="dialog" aria-controls="quickAddModal" aria-label="Quick add">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -674,6 +810,9 @@
         <button class="m-opt" type="button" data-jump="#card-notes" data-focus="#noteText"><span class="m-ico ico-amber" aria-hidden="true">✎</span> Add Note</button>
         <button class="m-opt" type="button" data-jump="#card-projects" data-focus="#projName"><span class="m-ico ico-purple" aria-hidden="true">◆</span> Add Project</button>
         <button class="m-opt" type="button" data-jump="#card-diary" data-focus="#diaryDid"><span class="m-ico ico-rose" aria-hidden="true">✦</span> Diary Entry</button>
+        <button class="m-opt" type="button" data-jump="#card-food" data-focus="#foodName"><span class="m-ico ico-earth" aria-hidden="true">◗</span> Add Food</button>
+        <button class="m-opt" type="button" data-jump="#card-meds" data-focus="#medName"><span class="m-ico ico-lav" aria-hidden="true">⊕</span> Add Medication</button>
+        <button class="m-opt" type="button" data-jump="#card-fasting" data-focus="#fastStart"><span class="m-ico ico-deep" aria-hidden="true">◔</span> Add Fast</button>
         <button class="m-opt" type="button" data-jump="#card-docs"><span class="m-ico ico-teal" aria-hidden="true">⎙</span> Upload Document</button>
         <button class="m-opt" type="button" data-jump="#card-calendar" data-focus="#evTitle"><span class="m-ico ico-blue" aria-hidden="true">◷</span> Add Event</button>
         <button class="m-opt" type="button" data-jump="#card-people" data-focus="#fuName"><span class="m-ico ico-coral" aria-hidden="true">☺</span> Add Follow-up</button>
@@ -682,7 +821,7 @@
   </div>
 
   <!-- ============================================================
-       MOBILE BOTTOM NAV (visible on small screens only)
+       MOBILE BOTTOM NAV
   ============================================================ -->
   <nav class="bottom-nav" aria-label="Mobile sections">
     <button type="button" data-jump="#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Today</span></button>
