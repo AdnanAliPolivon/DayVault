@@ -52,6 +52,11 @@
 /* ---------- 2. RESET & BASE ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 
+/* Ensure the hidden attribute always wins, even when a class
+   sets its own display value (fixes invisible modal overlay
+   blocking all clicks on the page). */
+[hidden] { display: none !important; }
+
 html {
   scroll-behavior: smooth;            /* smooth anchor scrolling */
   scroll-padding-top: 84px;           /* offset for sticky nav */
