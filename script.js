@@ -1,6 +1,8 @@
 /* ============================================================
-   DAYVAULT — script.js
+   CALM-E DAILY — script.js
    Functional front-end demo. All data lives in localStorage.
+   (Storage key kept from the DayVault era so existing data
+   survives the rebrand.)
 
    1.  Helpers
    2.  Data layer: seedData / loadData / saveData / migration

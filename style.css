@@ -292,13 +292,13 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
   transform: rotate(-45deg);
 }
 
-/* Shortcut strip under the hero */
+/* Shortcut strip: quick actions on Home */
 .shortcut-strip {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-top: 36px;
+  margin-bottom: 26px;
   padding: 14px;
   border-radius: var(--r-lg);
   background: var(--glass);
@@ -354,15 +354,64 @@ h1, h2, h3, .logo-text { font-family: var(--font-display); letter-spacing: -0.02
 .clarity-ring::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: var(--navy-800); }
 .clarity-ring span { position: relative; font: 700 0.86rem var(--font-display); color: #fff; }
 
-/* ---------- 7. DASHBOARD GRID & CARD SYSTEM ---------- */
-/* Aligned grid: equal-height cards in tidy columns. Long content
-   scrolls INSIDE each card (.card-body) so the outer layout stays
-   calm and orderly. */
-.dash-grid {
+/* ---------- 7. CATEGORY SECTIONS, MINI HEROES & CARD SYSTEM ---------- */
+
+/* Category sections: compact rhythm between Home → Admin */
+.cat-section { padding: 44px 0; }
+.cat-section:first-of-type { padding-top: 56px; }
+
+/* Mini hero: a short banner that gives each category its identity */
+.mini-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 28px;
+  border-radius: var(--r-lg);
+  margin-bottom: 26px;
+  color: #f4f1ea;
+  box-shadow: var(--shadow-md);
+}
+/* Soft radial sheen, shared by all variants */
+.mini-hero::after {
+  content: "";
+  position: absolute;
+  width: 320px; height: 320px;
+  top: -200px; right: -60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.16), transparent 65%);
+  pointer-events: none;
+}
+.mh-ico {
+  display: grid;
+  place-items: center;
+  width: 46px; height: 46px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.16);
+  flex-shrink: 0;
+}
+.mh-ico svg { width: 22px; height: 22px; }
+.mh-text h2 { font-size: 1.4rem; line-height: 1.15; }
+.mh-text p { margin-top: 3px; font-size: 0.9rem; opacity: 0.85; }
+
+/* Category personalities */
+.mh-navy   { background: linear-gradient(120deg, var(--navy-900), var(--navy-700)); }
+.mh-green  { background: linear-gradient(120deg, #0c5e42, #119d6c 70%, #8a6a14 130%); }
+.mh-purple { background: linear-gradient(120deg, #3d2e8f, var(--purple) 75%); }
+.mh-blush  { background: linear-gradient(120deg, #176a4f, #3f9377 70%, #b06077 135%); }
+.mh-teal   { background: linear-gradient(120deg, #23424e, var(--teal) 80%); }
+
+/* Card grids inside each category */
+.cat-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 28px;
 }
+.cat-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cat-grid.cols-1 { grid-template-columns: 1fr; }
+/* Single-card grids (e.g. Quick Capture on Home) size to content */
+.cat-grid.cols-1 .card { height: auto; max-height: 480px; }
 
 /* Shared card base */
 .card {
@@ -1120,6 +1169,16 @@ select.input { appearance: none; cursor: pointer; }
 .modal-close:hover { background: var(--coral-soft); color: var(--coral); }
 .modal-sub { margin: 6px 0 20px; font-size: 0.85rem; color: var(--ink-soft); font-style: italic; }
 .modal-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* Category group labels inside the Quick Add modal */
+.m-group {
+  grid-column: 1 / -1;
+  font: 700 0.64rem var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  margin-top: 6px;
+}
+.m-group:first-child { margin-top: 0; }
 .m-opt {
   display: flex;
   align-items: center;
@@ -1178,7 +1237,8 @@ select.input { appearance: none; cursor: pointer; }
    23. RESPONSIVE
    ============================================================ */
 @media (max-width: 1024px) {
-  .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cat-grid, .cat-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cat-grid.cols-1 { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
@@ -1199,15 +1259,23 @@ select.input { appearance: none; cursor: pointer; }
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    margin-top: 26px;
+    margin-bottom: 18px;
   }
   .shortcut-strip::-webkit-scrollbar { display: none; }
   .shortcut { flex-shrink: 0; }
 
   /* Single-column everything; cards grow naturally on mobile but
      long lists stay capped so no card overwhelms the screen */
-  .dash-grid { grid-template-columns: 1fr; gap: 20px; }
+  .cat-grid, .cat-grid.cols-2, .cat-grid.cols-1 { grid-template-columns: 1fr; gap: 18px; }
   .card { height: auto; max-height: 640px; }
+
+  /* Mini heroes stay visible but compact on small screens */
+  .cat-section { padding: 30px 0; }
+  .mini-hero { padding: 15px 18px; margin-bottom: 18px; border-radius: var(--r-md); }
+  .mh-ico { width: 38px; height: 38px; border-radius: 11px; }
+  .mh-ico svg { width: 18px; height: 18px; }
+  .mh-text h2 { font-size: 1.15rem; }
+  .mh-text p { font-size: 0.8rem; }
   .psych-grid { grid-template-columns: 1fr 1fr; }
   .mobile-grid { grid-template-columns: 1fr; gap: 44px; }
   .phone { width: min(308px, 86vw); }

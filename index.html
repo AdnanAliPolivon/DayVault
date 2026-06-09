@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="DayVault — a functional demo of a personal daily operating system. Track money, tasks, projects, diary, documents, food, medications, fasting, health, deadlines and follow-ups in one calm dashboard." />
-  <title>DayVault — Your everyday life, finally in one place.</title>
+  <meta name="description" content="Calm-e Daily — your daily life, collected and calm. Finances, goals, wellbeing, and life admin in one quiet dashboard." />
+  <title>Calm-e Daily — Your daily life, collected and calm.</title>
 
   <!-- Google Fonts: Sora (display) + Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,21 +17,22 @@
 
   <!-- ============================================================
        STICKY GLASS NAVIGATION
+       Five categories: Home · Finances · Goals · Wellbeing · Admin
   ============================================================ -->
   <header class="nav" id="top">
     <div class="nav-inner container">
-      <a class="nav-logo" href="#top" aria-label="DayVault home">
+      <a class="nav-logo" href="#top" aria-label="Calm-e Daily home">
         <span class="logo-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M12 8v1.5M12 14.5V16M8 12h1.5M14.5 12H16"/></svg>
         </span>
-        <span class="logo-text">DayVault</span>
+        <span class="logo-text">Calm-e Daily</span>
       </a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="#dashboard">Dashboard</a>
-        <a href="#card-money">Money</a>
-        <a href="#card-projects">Projects</a>
-        <a href="#card-diary">Diary</a>
-        <a href="#card-docs">Vault</a>
+        <a href="#home">Home</a>
+        <a href="#finances">Finances</a>
+        <a href="#goals">Goals</a>
+        <a href="#wellbeing">Wellbeing</a>
+        <a href="#admin">Admin</a>
       </nav>
       <button class="btn btn-primary btn-sm nav-cta" id="navQuickAdd" type="button">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -43,7 +44,7 @@
   <main>
 
     <!-- ============================================================
-         COMPACT HERO
+         COMPACT LANDING HERO
     ============================================================ -->
     <section class="hero">
       <div class="hero-glow glow-a" aria-hidden="true"></div>
@@ -52,10 +53,10 @@
       <div class="container hero-grid">
         <div class="hero-copy reveal">
           <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> A calm daily operating system</p>
-          <h1>Your everyday life,<br /><span class="text-gradient">finally in one place.</span></h1>
-          <p class="hero-sub">Money, tasks, projects, diary, food, health, deadlines, documents, and follow-ups — captured in one calm dashboard built for real life.</p>
+          <h1>Your daily life,<br /><span class="text-gradient">collected and calm.</span></h1>
+          <p class="hero-sub">Finances, goals, wellbeing, and life admin — captured in one quiet dashboard built for real life.</p>
           <div class="hero-actions">
-            <a href="#dashboard" class="btn btn-primary">
+            <a href="#home" class="btn btn-primary">
               Open Dashboard
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
@@ -97,36 +98,25 @@
           </div>
         </div>
       </div>
-
-      <!-- Shortcut strip: jumps to a card and focuses its input -->
-      <div class="container">
-        <div class="shortcut-strip reveal" role="toolbar" aria-label="Quick shortcuts">
-          <button type="button" class="shortcut" data-jump="#card-money" data-focus="#expTitle">+ Expense</button>
-          <button type="button" class="shortcut" data-jump="#card-tasks" data-focus="#taskTitle">+ Task</button>
-          <button type="button" class="shortcut" data-jump="#card-notes" data-focus="#noteText">+ Note</button>
-          <button type="button" class="shortcut" data-jump="#card-projects" data-focus="#projName">+ Project</button>
-          <button type="button" class="shortcut" data-jump="#card-diary" data-focus="#diaryDid">+ Diary</button>
-          <button type="button" class="shortcut" data-jump="#card-food" data-focus="#foodName">+ Food</button>
-          <button type="button" class="shortcut" data-jump="#card-meds" data-focus="#medName">+ Meds</button>
-          <button type="button" class="shortcut" data-jump="#card-fasting" data-focus="#fastStart">+ Fast</button>
-          <button type="button" class="shortcut" data-jump="#card-docs">+ Receipt</button>
-        </div>
-      </div>
     </section>
 
     <!-- ============================================================
-         TODAY'S COMMAND CENTER
-         Equal-height grid; every card scrolls internally so the
-         outer layout stays calm and aligned.
+         1. HOME — overview of your day
     ============================================================ -->
-    <section class="dashboard section" id="dashboard">
+    <section class="cat-section" id="home">
       <div class="container">
-        <div class="section-head reveal">
-          <h2>Today's Command Center</h2>
-          <p>Capture the small things before they become stress.</p>
-        </div>
+        <!-- Mini hero: neutral navy, the "control room" identity -->
+        <header class="mini-hero mh-navy reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Home</h2>
+            <p>Overview of your day.</p>
+          </div>
+        </header>
 
-        <!-- Summary strip -->
+        <!-- Summary strip: live key metrics -->
         <div class="summary-strip reveal" aria-label="Today's summary">
           <div class="sum-item"><span class="sum-label">Spent today</span><strong id="sumSpent">€0.00</strong></div>
           <div class="sum-item"><span class="sum-label">Tasks done</span><strong id="sumTasks">0 / 0</strong></div>
@@ -139,9 +129,70 @@
           </div>
         </div>
 
-        <div class="dash-grid">
+        <!-- Quick actions -->
+        <div class="shortcut-strip reveal" role="toolbar" aria-label="Quick actions">
+          <button type="button" class="shortcut" data-jump="#card-money" data-focus="#expTitle">+ Expense</button>
+          <button type="button" class="shortcut" data-jump="#card-tasks" data-focus="#taskTitle">+ Task</button>
+          <button type="button" class="shortcut" data-jump="#card-notes" data-focus="#noteText">+ Note</button>
+          <button type="button" class="shortcut" data-jump="#card-projects" data-focus="#projName">+ Project</button>
+          <button type="button" class="shortcut" data-jump="#card-diary" data-focus="#diaryDid">+ Diary</button>
+          <button type="button" class="shortcut" data-jump="#card-food" data-focus="#foodName">+ Food</button>
+          <button type="button" class="shortcut" data-jump="#card-meds" data-focus="#medName">+ Meds</button>
+          <button type="button" class="shortcut" data-jump="#card-fasting" data-focus="#fastStart">+ Fast</button>
+          <button type="button" class="shortcut" data-jump="#card-docs">+ Receipt</button>
+        </div>
 
-          <!-- ====== A. MONEY FLOW ====== -->
+        <!-- Quick Capture lives on Home: the inbox for loose thoughts -->
+        <div class="cat-grid cols-1">
+          <article class="card card-notes reveal" id="card-notes" aria-labelledby="notes-title">
+            <span class="card-stripe stripe-amber" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-amber" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="notes-title">Quick Capture</h3>
+                <small class="micro">Your brain is not a storage device.</small>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="noteForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="noteText" placeholder="Catch it before it's gone…" required />
+                  <select class="input input-narrow" id="noteKind" aria-label="Note type">
+                    <option>Idea</option><option>Address</option><option>Link</option><option>Reminder</option><option>Random</option>
+                  </select>
+                </div>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Capture</button>
+              </form>
+
+              <ul class="row-list" id="notesList"></ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. FINANCES — money flow + budget studio
+    ============================================================ -->
+    <section class="cat-section" id="finances">
+      <div class="container">
+        <!-- Mini hero: emerald with an amber edge -->
+        <header class="mini-hero mh-green reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="3"/><circle cx="12" cy="12.5" r="3"/><path d="M2 10h20"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Finances</h2>
+            <p>See where your money goes, and where it should stay.</p>
+          </div>
+        </header>
+
+        <div class="cat-grid cols-2">
+
+          <!-- Money Flow -->
           <article class="card card-money reveal" id="card-money" aria-labelledby="money-title">
             <span class="card-stripe stripe-green" aria-hidden="true"></span>
             <header class="card-head">
@@ -189,8 +240,24 @@
 
               <h4 class="sub-title">Today's expenses</h4>
               <ul class="row-list" id="expenseList"></ul>
+            </div>
+          </article>
 
-              <details class="mini-tool">
+          <!-- Budget Studio -->
+          <article class="card card-budget reveal" id="card-budget" aria-labelledby="budget-title">
+            <span class="card-stripe stripe-amber" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-amber" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 10h2M14 10h2M8 14h2M14 14h2M8 18h2M14 18h2"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="budget-title">Budget Studio</h3>
+                <small class="micro">One number to decide with, every morning.</small>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <details class="mini-tool" open>
                 <summary>Daily budget calculator</summary>
                 <div class="tool-body">
                   <div class="form-row">
@@ -206,6 +273,7 @@
                 </div>
               </details>
 
+              <h4 class="sub-title">Set manually</h4>
               <div class="form-row budget-set">
                 <input class="input" type="number" id="manualBudget" placeholder="Set today's budget €" step="0.5" min="1" />
                 <button class="btn btn-ghost btn-sm" type="button" id="setBudgetBtn">Set</button>
@@ -215,7 +283,29 @@
             </div>
           </article>
 
-          <!-- ====== B. PRIORITY STACK ====== -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. GOALS — tasks + projects that move you forward
+    ============================================================ -->
+    <section class="cat-section" id="goals">
+      <div class="container">
+        <!-- Mini hero: cool indigo/purple -->
+        <header class="mini-hero mh-purple reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Goals</h2>
+            <p>Projects and tasks that move you forward.</p>
+          </div>
+        </header>
+
+        <div class="cat-grid cols-2">
+
+          <!-- Priority Stack -->
           <article class="card card-tasks reveal" id="card-tasks" aria-labelledby="tasks-title">
             <span class="card-stripe stripe-blue" aria-hidden="true"></span>
             <header class="card-head">
@@ -257,7 +347,7 @@
             </div>
           </article>
 
-          <!-- ====== C. PROJECT PULSE ====== -->
+          <!-- Project Pulse -->
           <article class="card card-projects reveal" id="card-projects" aria-labelledby="projects-title">
             <span class="card-stripe stripe-purple" aria-hidden="true"></span>
             <header class="card-head">
@@ -294,35 +384,29 @@
             </div>
           </article>
 
-          <!-- ====== D. QUICK CAPTURE ====== -->
-          <article class="card card-notes reveal" id="card-notes" aria-labelledby="notes-title">
-            <span class="card-stripe stripe-amber" aria-hidden="true"></span>
-            <header class="card-head">
-              <span class="card-ico ico-amber" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-              </span>
-              <div class="head-text">
-                <h3 id="notes-title">Quick Capture</h3>
-                <small class="micro">Your brain is not a storage device.</small>
-              </div>
-            </header>
+        </div>
+      </div>
+    </section>
 
-            <div class="card-body">
-              <form class="card-form" id="noteForm">
-                <div class="form-row">
-                  <input class="input" type="text" id="noteText" placeholder="Catch it before it's gone…" required />
-                  <select class="input input-narrow" id="noteKind" aria-label="Note type">
-                    <option>Idea</option><option>Address</option><option>Link</option><option>Reminder</option><option>Random</option>
-                  </select>
-                </div>
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Capture</button>
-              </form>
+    <!-- ============================================================
+         4. WELLBEING — health, habits, and reflections
+    ============================================================ -->
+    <section class="cat-section" id="wellbeing">
+      <div class="container">
+        <!-- Mini hero: calm green with a warm blush edge -->
+        <header class="mini-hero mh-blush reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Wellbeing</h2>
+            <p>Health, habits, and reflections for a balanced life.</p>
+          </div>
+        </header>
 
-              <ul class="row-list" id="notesList"></ul>
-            </div>
-          </article>
+        <div class="cat-grid">
 
-          <!-- ====== E. DAILY DIARY ====== -->
+          <!-- Daily Diary -->
           <article class="card card-diary reveal" id="card-diary" aria-labelledby="diary-title">
             <span class="card-stripe stripe-rose" aria-hidden="true"></span>
             <header class="card-head">
@@ -336,7 +420,6 @@
             </header>
 
             <div class="card-body">
-              <!-- Form sits in its own framed box, separated from entries -->
               <form class="card-form form-box" id="diaryForm">
                 <input class="input" type="text" id="diaryDid" placeholder="Today I did…" required />
                 <input class="input" type="text" id="diaryFelt" placeholder="I felt…" />
@@ -356,7 +439,185 @@
             </div>
           </article>
 
-          <!-- ====== F. VAULT & RECEIPTS ====== -->
+          <!-- Body Signal -->
+          <article class="card card-health reveal" id="card-health" aria-labelledby="health-title">
+            <span class="card-stripe stripe-green" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-green" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="health-title">Body Signal</h3>
+                <small class="micro">Patterns speak before problems shout.</small>
+              </div>
+              <span class="card-tag tag-green" id="healthTag">—</span>
+            </header>
+
+            <div class="card-body">
+              <div class="health-grid" id="healthSnap"></div>
+
+              <details class="mini-tool">
+                <summary>Update / edit today's snapshot</summary>
+                <form class="tool-body" id="healthForm">
+                  <div class="form-row">
+                    <input class="input" type="text" id="hSleep" placeholder="Sleep (e.g. 6h 20m)" />
+                    <input class="input" type="number" id="hWater" placeholder="Water (L)" step="0.1" min="0" />
+                  </div>
+                  <div class="form-row">
+                    <input class="input" type="number" id="hEnergy" placeholder="Energy 1–10" min="1" max="10" />
+                    <input class="input" type="number" id="hCigs" placeholder="Cigarettes" min="0" />
+                  </div>
+                  <input class="input" type="text" id="hSupps" placeholder="Supplements / medicine taken (optional)" />
+                  <input class="input" type="text" id="hSymptoms" placeholder="Symptoms (or none)" />
+                  <label class="check-row"><input type="checkbox" id="hWorkout" /> Workout done today</label>
+                  <button class="btn btn-primary btn-sm btn-block" type="submit">Save Snapshot</button>
+                </form>
+              </details>
+            </div>
+          </article>
+
+          <!-- Food Diary -->
+          <article class="card card-food reveal" id="card-food" aria-labelledby="food-title">
+            <span class="card-stripe stripe-earth" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-earth" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M5 11l1.2 8.4A2 2 0 0 0 8.2 21h7.6a2 2 0 0 0 2-1.6L19 11"/><path d="M12 11V7a3 3 0 0 1 3-3h0"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="food-title">Food Diary</h3>
+                <small class="micro">Your stomach keeps better notes than you do.</small>
+              </div>
+              <span class="card-tag tag-earth" id="foodCount">0 today</span>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="foodForm">
+                <input class="input" type="text" id="foodName" placeholder="What did you eat?" required />
+                <div class="form-row">
+                  <input class="input" type="text" id="foodPortion" placeholder="Portion (e.g. 1 bowl)" />
+                  <select class="input input-narrow" id="foodMeal" aria-label="Meal">
+                    <option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option>
+                  </select>
+                </div>
+                <select class="input" id="foodEffect" aria-label="How did it sit?">
+                  <option value="">How did it sit? (optional)</option>
+                  <option>Light</option><option>Fine</option><option>Heavy</option><option>Bloated</option><option>Acidic</option>
+                </select>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Food</button>
+              </form>
+
+              <h4 class="sub-title">Today</h4>
+              <ul class="row-list" id="foodList"></ul>
+
+              <details class="mini-tool" id="foodHistoryWrap">
+                <summary>Earlier entries</summary>
+                <ul class="row-list tool-body" id="foodHistory"></ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Medications & Supplements -->
+          <article class="card card-meds reveal" id="card-meds" aria-labelledby="meds-title">
+            <span class="card-stripe stripe-lav" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-lav" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="13" height="7" rx="3.5" transform="rotate(-45 9 12)"/><path d="M8.5 8.5l7 7"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="meds-title">Medications &amp; Supplements</h3>
+                <small class="micro">Consistency is the whole medicine.</small>
+              </div>
+              <span class="card-tag tag-lav" id="medCount">0 active</span>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="medForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="medName" placeholder="Name (e.g. Vitamin D3)" required />
+                  <input class="input" type="text" id="medDose" placeholder="Dosage (e.g. 2000 IU)" />
+                </div>
+                <div class="form-row">
+                  <select class="input" id="medFreq" aria-label="Frequency">
+                    <option>Once daily</option><option>Twice daily</option><option>3× daily</option>
+                    <option>Weekly</option><option>As needed</option>
+                  </select>
+                  <input class="input" type="date" id="medStart" aria-label="Start date" />
+                </div>
+                <div class="form-row">
+                  <input class="input" type="date" id="medEnd" aria-label="End date" />
+                  <label class="check-row"><input type="checkbox" id="medOngoing" checked /> Ongoing</label>
+                </div>
+                <input class="input" type="text" id="medNotes" placeholder="Notes (optional)" />
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Medication</button>
+              </form>
+
+              <h4 class="sub-title">Active</h4>
+              <ul class="row-list" id="medList"></ul>
+
+              <details class="mini-tool" id="medHistoryWrap">
+                <summary>Completed</summary>
+                <ul class="row-list tool-body" id="medHistory"></ul>
+              </details>
+            </div>
+          </article>
+
+          <!-- Fasting Tracker -->
+          <article class="card card-fasting reveal" id="card-fasting" aria-labelledby="fast-title">
+            <span class="card-stripe stripe-deep" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-deep" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-3 2"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="fast-title">Fasting Tracker</h3>
+                <small class="micro">Stillness is also a practice.</small>
+              </div>
+              <span class="card-tag tag-deep" id="fastTag">—</span>
+            </header>
+
+            <div class="card-body">
+              <div id="fastNow"></div>
+
+              <form class="card-form" id="fastForm">
+                <div class="form-row">
+                  <select class="input" id="fastType" aria-label="Fasting type">
+                    <option>16/8</option><option>24-hour</option><option>Religious</option><option>Custom</option>
+                  </select>
+                </div>
+                <label class="dt-label">Start<input class="input" type="datetime-local" id="fastStart" /></label>
+                <label class="dt-label">End <span class="dt-hint">(leave empty if ongoing)</span><input class="input" type="datetime-local" id="fastEnd" /></label>
+                <input class="input" type="text" id="fastNotes" placeholder="How did it feel? (optional)" />
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Log Fast</button>
+              </form>
+
+              <h4 class="sub-title">Recent fasts</h4>
+              <ul class="row-list" id="fastList"></ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. ADMIN — documents, dates, and people
+    ============================================================ -->
+    <section class="cat-section" id="admin">
+      <div class="container">
+        <!-- Mini hero: clean slate → teal -->
+        <header class="mini-hero mh-teal reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Admin</h2>
+            <p>Documents, dates, and people — all in order.</p>
+          </div>
+        </header>
+
+        <div class="cat-grid">
+
+          <!-- Vault & Receipts -->
           <article class="card card-docs reveal" id="card-docs" aria-labelledby="docs-title">
             <span class="card-stripe stripe-teal" aria-hidden="true"></span>
             <header class="card-head">
@@ -406,165 +667,7 @@
             </div>
           </article>
 
-          <!-- ====== G. BODY SIGNAL ====== -->
-          <article class="card card-health reveal" id="card-health" aria-labelledby="health-title">
-            <span class="card-stripe stripe-green" aria-hidden="true"></span>
-            <header class="card-head">
-              <span class="card-ico ico-green" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-              </span>
-              <div class="head-text">
-                <h3 id="health-title">Body Signal</h3>
-                <small class="micro">Patterns speak before problems shout.</small>
-              </div>
-              <span class="card-tag tag-green" id="healthTag">—</span>
-            </header>
-
-            <div class="card-body">
-              <div class="health-grid" id="healthSnap"></div>
-
-              <!-- Form prefills with today's values so the snapshot is editable -->
-              <details class="mini-tool">
-                <summary>Update / edit today's snapshot</summary>
-                <form class="tool-body" id="healthForm">
-                  <div class="form-row">
-                    <input class="input" type="text" id="hSleep" placeholder="Sleep (e.g. 6h 20m)" />
-                    <input class="input" type="number" id="hWater" placeholder="Water (L)" step="0.1" min="0" />
-                  </div>
-                  <div class="form-row">
-                    <input class="input" type="number" id="hEnergy" placeholder="Energy 1–10" min="1" max="10" />
-                    <input class="input" type="number" id="hCigs" placeholder="Cigarettes" min="0" />
-                  </div>
-                  <input class="input" type="text" id="hSupps" placeholder="Supplements / medicine taken (optional)" />
-                  <input class="input" type="text" id="hSymptoms" placeholder="Symptoms (or none)" />
-                  <label class="check-row"><input type="checkbox" id="hWorkout" /> Workout done today</label>
-                  <button class="btn btn-primary btn-sm btn-block" type="submit">Save Snapshot</button>
-                </form>
-              </details>
-            </div>
-          </article>
-
-          <!-- ====== H. FOOD DIARY ====== -->
-          <article class="card card-food reveal" id="card-food" aria-labelledby="food-title">
-            <span class="card-stripe stripe-earth" aria-hidden="true"></span>
-            <header class="card-head">
-              <span class="card-ico ico-earth" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M5 11l1.2 8.4A2 2 0 0 0 8.2 21h7.6a2 2 0 0 0 2-1.6L19 11"/><path d="M12 11V7a3 3 0 0 1 3-3h0"/></svg>
-              </span>
-              <div class="head-text">
-                <h3 id="food-title">Food Diary</h3>
-                <small class="micro">Your stomach keeps better notes than you do.</small>
-              </div>
-              <span class="card-tag tag-earth" id="foodCount">0 today</span>
-            </header>
-
-            <div class="card-body">
-              <form class="card-form" id="foodForm">
-                <input class="input" type="text" id="foodName" placeholder="What did you eat?" required />
-                <div class="form-row">
-                  <input class="input" type="text" id="foodPortion" placeholder="Portion (e.g. 1 bowl)" />
-                  <select class="input input-narrow" id="foodMeal" aria-label="Meal">
-                    <option>Breakfast</option><option>Lunch</option><option>Dinner</option><option>Snack</option>
-                  </select>
-                </div>
-                <select class="input" id="foodEffect" aria-label="How did it sit?">
-                  <option value="">How did it sit? (optional)</option>
-                  <option>Light</option><option>Fine</option><option>Heavy</option><option>Bloated</option><option>Acidic</option>
-                </select>
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Food</button>
-              </form>
-
-              <h4 class="sub-title">Today</h4>
-              <ul class="row-list" id="foodList"></ul>
-
-              <details class="mini-tool" id="foodHistoryWrap">
-                <summary>Earlier entries</summary>
-                <ul class="row-list tool-body" id="foodHistory"></ul>
-              </details>
-            </div>
-          </article>
-
-          <!-- ====== I. MEDICATIONS & SUPPLEMENTS ====== -->
-          <article class="card card-meds reveal" id="card-meds" aria-labelledby="meds-title">
-            <span class="card-stripe stripe-lav" aria-hidden="true"></span>
-            <header class="card-head">
-              <span class="card-ico ico-lav" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8.5" width="13" height="7" rx="3.5" transform="rotate(-45 9 12)"/><path d="M8.5 8.5l7 7"/></svg>
-              </span>
-              <div class="head-text">
-                <h3 id="meds-title">Medications &amp; Supplements</h3>
-                <small class="micro">Consistency is the whole medicine.</small>
-              </div>
-              <span class="card-tag tag-lav" id="medCount">0 active</span>
-            </header>
-
-            <div class="card-body">
-              <form class="card-form" id="medForm">
-                <div class="form-row">
-                  <input class="input" type="text" id="medName" placeholder="Name (e.g. Vitamin D3)" required />
-                  <input class="input" type="text" id="medDose" placeholder="Dosage (e.g. 2000 IU)" />
-                </div>
-                <div class="form-row">
-                  <select class="input" id="medFreq" aria-label="Frequency">
-                    <option>Once daily</option><option>Twice daily</option><option>3× daily</option>
-                    <option>Weekly</option><option>As needed</option>
-                  </select>
-                  <input class="input" type="date" id="medStart" aria-label="Start date" />
-                </div>
-                <div class="form-row">
-                  <input class="input" type="date" id="medEnd" aria-label="End date" />
-                  <label class="check-row"><input type="checkbox" id="medOngoing" checked /> Ongoing</label>
-                </div>
-                <input class="input" type="text" id="medNotes" placeholder="Notes (optional)" />
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Add Medication</button>
-              </form>
-
-              <h4 class="sub-title">Active</h4>
-              <ul class="row-list" id="medList"></ul>
-
-              <details class="mini-tool" id="medHistoryWrap">
-                <summary>Completed</summary>
-                <ul class="row-list tool-body" id="medHistory"></ul>
-              </details>
-            </div>
-          </article>
-
-          <!-- ====== J. FASTING TRACKER ====== -->
-          <article class="card card-fasting reveal" id="card-fasting" aria-labelledby="fast-title">
-            <span class="card-stripe stripe-deep" aria-hidden="true"></span>
-            <header class="card-head">
-              <span class="card-ico ico-deep" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l-3 2"/></svg>
-              </span>
-              <div class="head-text">
-                <h3 id="fast-title">Fasting Tracker</h3>
-                <small class="micro">Stillness is also a practice.</small>
-              </div>
-              <span class="card-tag tag-deep" id="fastTag">—</span>
-            </header>
-
-            <div class="card-body">
-              <!-- Ongoing fast progress renders here -->
-              <div id="fastNow"></div>
-
-              <form class="card-form" id="fastForm">
-                <div class="form-row">
-                  <select class="input" id="fastType" aria-label="Fasting type">
-                    <option>16/8</option><option>24-hour</option><option>Religious</option><option>Custom</option>
-                  </select>
-                </div>
-                <label class="dt-label">Start<input class="input" type="datetime-local" id="fastStart" /></label>
-                <label class="dt-label">End <span class="dt-hint">(leave empty if ongoing)</span><input class="input" type="datetime-local" id="fastEnd" /></label>
-                <input class="input" type="text" id="fastNotes" placeholder="How did it feel? (optional)" />
-                <button class="btn btn-primary btn-sm btn-block" type="submit">Log Fast</button>
-              </form>
-
-              <h4 class="sub-title">Recent fasts</h4>
-              <ul class="row-list" id="fastList"></ul>
-            </div>
-          </article>
-
-          <!-- ====== K. TIME ANCHORS ====== -->
+          <!-- Time Anchors -->
           <article class="card card-calendar reveal" id="card-calendar" aria-labelledby="cal-title">
             <span class="card-stripe stripe-sky" aria-hidden="true"></span>
             <header class="card-head">
@@ -595,7 +698,7 @@
             </div>
           </article>
 
-          <!-- ====== L. PEOPLE LOOP ====== -->
+          <!-- People Loop -->
           <article class="card card-people reveal" id="card-people" aria-labelledby="people-title">
             <span class="card-stripe stripe-coral" aria-hidden="true"></span>
             <header class="card-head">
@@ -633,7 +736,6 @@
 
     <!-- ============================================================
          HOW YOUR DAY FLOWS — intelligent, data-driven
-         JS (generateDailyFlow) fills each step from your own cards.
     ============================================================ -->
     <section class="flow section" id="flow">
       <div class="container">
@@ -677,7 +779,7 @@
       <div class="container">
         <div class="section-head reveal">
           <h2>Designed around how real people actually behave.</h2>
-          <p>Your life is scattered across bank apps, chats, screenshots, and memory. DayVault is the capture system — not another discipline test.</p>
+          <p>Your life is scattered across bank apps, chats, screenshots, and memory. Calm-e Daily is the capture system — not another discipline test.</p>
         </div>
         <div class="psych-grid">
           <article class="psy-card reveal">
@@ -712,7 +814,7 @@
         <div class="mobile-copy reveal">
           <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Pocket-sized</p>
           <h2>Your whole day, one thumb away.</h2>
-          <p>The same command center, shaped for the moments between moments — the queue, the tram, the elevator.</p>
+          <p>The same calm dashboard, shaped for the moments between moments — the queue, the tram, the elevator.</p>
           <ul class="mobile-points">
             <li><span class="point-dot dot-green" aria-hidden="true"></span> Capture an expense in under four seconds.</li>
             <li><span class="point-dot dot-blue" aria-hidden="true"></span> Check must-dos without opening five apps.</li>
@@ -720,7 +822,7 @@
           </ul>
         </div>
         <div class="phone-wrap reveal">
-          <div class="phone" role="img" aria-label="DayVault mobile dashboard preview">
+          <div class="phone" role="img" aria-label="Calm-e Daily mobile dashboard preview">
             <div class="phone-notch" aria-hidden="true"></div>
             <div class="phone-screen">
               <div class="ph-header">
@@ -759,9 +861,9 @@
       <div class="container">
         <div class="cta-card reveal">
           <div class="cta-glow" aria-hidden="true"></div>
-          <h2>Stop trying to remember your whole life.</h2>
+          <h2>Keep calm and stay collected.</h2>
           <p>Build a small daily system. Save your brain for thinking.</p>
-          <a href="#dashboard" class="btn btn-light">
+          <a href="#home" class="btn btn-light">
             Open Demo Dashboard
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
@@ -780,16 +882,16 @@
         <span class="logo-mark" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M12 8v1.5M12 14.5V16M8 12h1.5M14.5 12H16"/></svg>
         </span>
-        <span class="logo-text">DayVault</span>
+        <span class="logo-text">Calm-e Daily</span>
       </a>
-      <p>DayVault — Personal command center for everyday life.</p>
+      <p>Calm-e Daily — Your daily life, collected and calm.</p>
       <small>A clear day starts with a clear capture system.</small>
       <button class="reset-btn" id="resetBtn" type="button">Reset demo data</button>
     </div>
   </footer>
 
   <!-- ============================================================
-       FLOATING QUICK ADD + MODAL
+       FLOATING QUICK ADD + MODAL (grouped by category)
   ============================================================ -->
   <button class="fab" id="quickAddBtn" type="button" aria-haspopup="dialog" aria-controls="quickAddModal" aria-label="Quick add">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -805,14 +907,19 @@
       </header>
       <p class="modal-sub">Capture it now. Sort it never.</p>
       <div class="modal-options">
-        <button class="m-opt" type="button" data-jump="#card-money" data-focus="#expTitle"><span class="m-ico ico-green" aria-hidden="true">€</span> Add Expense</button>
-        <button class="m-opt" type="button" data-jump="#card-tasks" data-focus="#taskTitle"><span class="m-ico ico-blue" aria-hidden="true">✓</span> Add Task</button>
+        <p class="m-group">Home</p>
         <button class="m-opt" type="button" data-jump="#card-notes" data-focus="#noteText"><span class="m-ico ico-amber" aria-hidden="true">✎</span> Add Note</button>
+        <p class="m-group">Finances</p>
+        <button class="m-opt" type="button" data-jump="#card-money" data-focus="#expTitle"><span class="m-ico ico-green" aria-hidden="true">€</span> Add Expense</button>
+        <p class="m-group">Goals</p>
+        <button class="m-opt" type="button" data-jump="#card-tasks" data-focus="#taskTitle"><span class="m-ico ico-blue" aria-hidden="true">✓</span> Add Task</button>
         <button class="m-opt" type="button" data-jump="#card-projects" data-focus="#projName"><span class="m-ico ico-purple" aria-hidden="true">◆</span> Add Project</button>
+        <p class="m-group">Wellbeing</p>
         <button class="m-opt" type="button" data-jump="#card-diary" data-focus="#diaryDid"><span class="m-ico ico-rose" aria-hidden="true">✦</span> Diary Entry</button>
         <button class="m-opt" type="button" data-jump="#card-food" data-focus="#foodName"><span class="m-ico ico-earth" aria-hidden="true">◗</span> Add Food</button>
         <button class="m-opt" type="button" data-jump="#card-meds" data-focus="#medName"><span class="m-ico ico-lav" aria-hidden="true">⊕</span> Add Medication</button>
         <button class="m-opt" type="button" data-jump="#card-fasting" data-focus="#fastStart"><span class="m-ico ico-deep" aria-hidden="true">◔</span> Add Fast</button>
+        <p class="m-group">Admin</p>
         <button class="m-opt" type="button" data-jump="#card-docs"><span class="m-ico ico-teal" aria-hidden="true">⎙</span> Upload Document</button>
         <button class="m-opt" type="button" data-jump="#card-calendar" data-focus="#evTitle"><span class="m-ico ico-blue" aria-hidden="true">◷</span> Add Event</button>
         <button class="m-opt" type="button" data-jump="#card-people" data-focus="#fuName"><span class="m-ico ico-coral" aria-hidden="true">☺</span> Add Follow-up</button>
@@ -821,14 +928,14 @@
   </div>
 
   <!-- ============================================================
-       MOBILE BOTTOM NAV
+       MOBILE BOTTOM NAV — one icon per category
   ============================================================ -->
   <nav class="bottom-nav" aria-label="Mobile sections">
-    <button type="button" data-jump="#dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Today</span></button>
-    <button type="button" data-jump="#card-money"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M2 10h20"/></svg><span>Money</span></button>
-    <button type="button" data-jump="#card-projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg><span>Projects</span></button>
-    <button type="button" data-jump="#card-diary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Diary</span></button>
-    <button type="button" data-jump="#card-docs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Vault</span></button>
+    <button type="button" data-jump="#home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg><span>Home</span></button>
+    <button type="button" data-jump="#finances"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M2 10h20"/></svg><span>Finances</span></button>
+    <button type="button" data-jump="#goals"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg><span>Goals</span></button>
+    <button type="button" data-jump="#wellbeing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Wellbeing</span></button>
+    <button type="button" data-jump="#admin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span>Admin</span></button>
   </nav>
 
   <script src="script.js"></script>
