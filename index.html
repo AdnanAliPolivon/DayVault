@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="DayVault — your personal command center for everyday life. Track money, tasks, notes, projects, habits, health, deadlines, people and documents in one calm daily dashboard." />
+  <title>DayVault — Your everyday life, finally in one place.</title>
+
+  <!-- Google Fonts: Sora for display headings, Inter for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+       Sticky glass nav with anchor links to each section.
+  ============================================================ -->
+  <header class="nav" id="top">
+    <div class="nav-inner container">
+      <a class="nav-logo" href="#top" aria-label="DayVault home">
+        <span class="logo-mark" aria-hidden="true">
+          <!-- Vault icon: a rounded square with a dial -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M12 8v1.5M12 14.5V16M8 12h1.5M14.5 12H16"/></svg>
+        </span>
+        <span class="logo-text">DayVault</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#flow">Daily System</a>
+        <a href="#features">Features</a>
+        <a href="#mobile">Mobile</a>
+      </nav>
+      <a href="#dashboard" class="btn btn-primary btn-sm nav-cta">Open Demo</a>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         1. HERO SECTION
+         Split layout: copy on the left, mini dashboard mockup right.
+    ============================================================ -->
+    <section class="hero">
+      <!-- Soft ambient gradient blobs in the background -->
+      <div class="hero-glow glow-a" aria-hidden="true"></div>
+      <div class="hero-glow glow-b" aria-hidden="true"></div>
+
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> A calm daily operating system</p>
+          <h1>Your everyday life,<br /><span class="text-gradient">finally in one place.</span></h1>
+          <p class="hero-sub">Track your money, tasks, notes, projects, health, habits, documents, and follow-ups in a calm daily dashboard built for real life.</p>
+
+          <div class="hero-actions">
+            <a href="#dashboard" class="btn btn-primary" id="viewDashboardBtn">
+              View Dashboard
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="#flow" class="btn btn-ghost" id="seeSystemBtn">See Daily System</a>
+          </div>
+
+          <p class="hero-nudge">You are not behind. You are just untracked.</p>
+
+          <div class="trust-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/></svg>
+            Built for students, freelancers, founders, and anyone tired of mental chaos.
+          </div>
+        </div>
+
+        <!-- Hero mockup: a floating mini-dashboard -->
+        <div class="hero-mockup reveal" aria-label="Dashboard preview">
+          <div class="mockup-window">
+            <div class="mockup-titlebar" aria-hidden="true">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+              <span class="mockup-title">Today · Tuesday</span>
+            </div>
+            <div class="mockup-grid">
+              <div class="mock-card float-1">
+                <span class="mock-label"><span class="mini-ico ico-green" aria-hidden="true">€</span> Today's spending</span>
+                <strong>€18.50</strong>
+                <div class="mock-bar"><span style="--w:62%" class="bar-fill bar-blue"></span></div>
+              </div>
+              <div class="mock-card float-2">
+                <span class="mock-label"><span class="mini-ico ico-amber" aria-hidden="true">!</span> Must-do tasks</span>
+                <ul class="mock-list">
+                  <li><span class="tick done" aria-hidden="true"></span> Submit visa form</li>
+                  <li><span class="tick" aria-hidden="true"></span> Pay rent</li>
+                </ul>
+              </div>
+              <div class="mock-card float-3">
+                <span class="mock-label"><span class="mini-ico ico-purple" aria-hidden="true">◆</span> Vanera App Launch</span>
+                <div class="mock-bar"><span style="--w:68%" class="bar-fill bar-purple"></span></div>
+                <small>68% · next: payment flow</small>
+              </div>
+              <div class="mock-card float-4">
+                <span class="mock-label"><span class="mini-ico ico-green" aria-hidden="true">♥</span> Health snapshot</span>
+                <small>Sleep 6h 20m · Water 1.8L · Energy 7/10</small>
+              </div>
+              <div class="mock-card float-5">
+                <span class="mock-label"><span class="mini-ico ico-blue" aria-hidden="true">✎</span> Notes</span>
+                <small>"Daily finance + study tracker idea…"</small>
+              </div>
+              <div class="mock-card float-6">
+                <span class="mock-label"><span class="mini-ico ico-amber" aria-hidden="true">◷</span> Upcoming deadline</span>
+                <small>Embassy appointment — Friday 10:00</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         2. PROBLEM SECTION
+         Floating "chaos" bubbles that organize into one dashboard,
+         followed by short problem cards.
+    ============================================================ -->
+    <section class="problem section" id="problem">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Most people do not lack discipline.<br /><span class="text-muted">They lack a capture system.</span></h2>
+          <p>Your life is scattered across bank apps, WhatsApp messages, notebooks, screenshots, calendars, receipts — and your memory. None of them talk to each other.</p>
+        </div>
+
+        <!-- Visual: chaos bubbles converge into one tidy dashboard chip -->
+        <div class="chaos-stage reveal" aria-hidden="true">
+          <div class="chaos-field">
+            <span class="bubble b1">Bank app</span>
+            <span class="bubble b2">WhatsApp</span>
+            <span class="bubble b3">Sticky notes</span>
+            <span class="bubble b4">Screenshots</span>
+            <span class="bubble b5">Calendar</span>
+            <span class="bubble b6">Receipts</span>
+            <span class="bubble b7">Memory</span>
+            <span class="bubble b8">Notebook</span>
+          </div>
+          <div class="chaos-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+          <div class="chaos-result">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/></svg>
+            One dashboard
+          </div>
+        </div>
+
+        <div class="problem-grid">
+          <article class="p-card reveal">
+            <span class="p-ico ico-coral" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </span>
+            <h3>Money disappears quietly.</h3>
+            <p>Money does not disappear. It leaks — €3 at a time.</p>
+          </article>
+          <article class="p-card reveal">
+            <span class="p-ico ico-amber" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </span>
+            <h3>Tasks live in your head.</h3>
+            <p>Your brain is not a storage device. Stop using it like one.</p>
+          </article>
+          <article class="p-card reveal">
+            <span class="p-ico ico-blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+            </span>
+            <h3>Receipts vanish when needed.</h3>
+            <p>The one screenshot you need is always the one you lost.</p>
+          </article>
+          <article class="p-card reveal">
+            <span class="p-ico ico-purple" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+            </span>
+            <h3>Projects move slowly because progress is invisible.</h3>
+            <p>Projects need next steps, not anxiety.</p>
+          </article>
+          <article class="p-card reveal">
+            <span class="p-ico ico-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21.2l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+            </span>
+            <h3>Health patterns are ignored until they become problems.</h3>
+            <p>Track the small things before they become big problems.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3. CORE DASHBOARD PREVIEW — "Today's Command Center"
+         Interactive masonry grid of nine life cards.
+    ============================================================ -->
+    <section class="dashboard section" id="dashboard">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Live demo · dummy data</p>
+          <h2>Today's Command Center</h2>
+          <p>A clear day starts with a clear capture system. Tap around — everything below is interactive.</p>
+        </div>
+
+        <div class="dash-grid">
+
+          <!-- A. MONEY CARD -->
+          <article class="card card-money reveal" aria-labelledby="money-title">
+            <header class="card-head">
+              <span class="card-ico ico-green" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="3"/><circle cx="12" cy="12.5" r="3"/><path d="M2 10h20"/></svg>
+              </span>
+              <h3 id="money-title">Money</h3>
+              <span class="card-tag tag-green">Tracked</span>
+            </header>
+
+            <div class="money-stats">
+              <div class="m-stat">
+                <span class="m-label">Today spent</span>
+                <strong class="m-value">€18.50</strong>
+              </div>
+              <div class="m-stat stat-green">
+                <span class="m-label">Saved today</span>
+                <strong class="m-value">+€7.00</strong>
+              </div>
+              <div class="m-stat stat-coral">
+                <span class="m-label">Waste spending</span>
+                <strong class="m-value">€3.50</strong>
+              </div>
+            </div>
+
+            <!-- Category breakdown: bars animate on load via JS -->
+            <ul class="cat-list">
+              <li class="cat">
+                <span class="cat-name">Food</span>
+                <span class="cat-track"><span class="cat-fill bar-green" data-width="48%"></span></span>
+                <span class="cat-amt">€8.90</span>
+              </li>
+              <li class="cat">
+                <span class="cat-name">Transport</span>
+                <span class="cat-track"><span class="cat-fill bar-blue" data-width="26%"></span></span>
+                <span class="cat-amt">€4.80</span>
+              </li>
+              <li class="cat">
+                <span class="cat-name">Coffee</span>
+                <span class="cat-track"><span class="cat-fill bar-amber" data-width="19%"></span></span>
+                <span class="cat-amt">€3.50</span>
+              </li>
+              <li class="cat">
+                <span class="cat-name">Other</span>
+                <span class="cat-track"><span class="cat-fill bar-muted" data-width="7%"></span></span>
+                <span class="cat-amt">€1.30</span>
+              </li>
+            </ul>
+
+            <div class="budget-row">
+              <div class="budget-meta"><span>Daily budget used</span><strong>62%</strong></div>
+              <div class="budget-track"><span class="budget-fill" data-width="62%"></span></div>
+            </div>
+            <p class="card-nudge">Money does not disappear. It leaks.</p>
+          </article>
+
+          <!-- B. TASKS CARD -->
+          <article class="card card-tasks reveal" aria-labelledby="tasks-title">
+            <header class="card-head">
+              <span class="card-ico ico-amber" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </span>
+              <h3 id="tasks-title">Tasks</h3>
+              <span class="card-tag tag-amber">3 must-dos</span>
+            </header>
+
+            <div class="task-group">
+              <h4 class="task-tier tier-must">Must do</h4>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Submit visa form</span></label>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Pay rent</span></label>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Gym session</span></label>
+            </div>
+            <div class="task-group">
+              <h4 class="task-tier tier-should">Should do</h4>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Clean room</span></label>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Call family</span></label>
+            </div>
+            <div class="task-group">
+              <h4 class="task-tier tier-could">Could do</h4>
+              <label class="task"><input type="checkbox" class="task-check" /><span class="checkmark" aria-hidden="true"></span><span class="task-text">Organize photos</span></label>
+            </div>
+            <p class="card-nudge">Priority beats pressure.</p>
+          </article>
+
+          <!-- C. QUICK NOTES CARD -->
+          <article class="card card-notes reveal" aria-labelledby="notes-title">
+            <header class="card-head">
+              <span class="card-ico ico-blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+              </span>
+              <h3 id="notes-title">Quick Notes</h3>
+              <span class="card-tag tag-blue">Fast capture</span>
+            </header>
+            <ul class="notes-list">
+              <li class="note">
+                <span class="note-kind">Idea</span>
+                <p>"Project idea: daily finance + study tracker for students."</p>
+              </li>
+              <li class="note">
+                <span class="note-kind">Address</span>
+                <p>Embassy — Tiergartenstr. 24, ring bell B.</p>
+              </li>
+              <li class="note">
+                <span class="note-kind">Link</span>
+                <p>Visa checklist PDF — saved to Documents.</p>
+              </li>
+            </ul>
+            <div class="note-chips" aria-label="Note types">
+              <span class="chip">Ideas</span><span class="chip">Addresses</span><span class="chip">Names</span><span class="chip">Links</span><span class="chip">To remember</span>
+            </div>
+          </article>
+
+          <!-- D. PROJECTS CARD -->
+          <article class="card card-projects reveal" aria-labelledby="projects-title">
+            <header class="card-head">
+              <span class="card-ico ico-purple" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.3 7L12 12l8.7-5M12 22V12"/></svg>
+              </span>
+              <h3 id="projects-title">Projects</h3>
+              <span class="card-tag tag-purple">4 active</span>
+            </header>
+
+            <!-- Featured project -->
+            <div class="project-feature">
+              <div class="pf-top">
+                <strong>Vanera App Launch</strong>
+                <span class="status-pill">Moving</span>
+              </div>
+              <div class="pf-track"><span class="pf-fill" data-width="68%"></span></div>
+              <div class="pf-meta">
+                <span class="pf-pct">68%</span>
+                <span class="pf-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Next: Test payment flow</span>
+                <span class="pf-due">Due Friday</span>
+              </div>
+            </div>
+
+            <!-- Mini projects -->
+            <ul class="mini-projects">
+              <li class="mini-project">
+                <span class="mp-name">Thesis draft</span>
+                <span class="mp-track"><span class="mp-fill" data-width="35%"></span></span>
+                <span class="mp-pct">35%</span>
+              </li>
+              <li class="mini-project">
+                <span class="mp-name">Visa documents</span>
+                <span class="mp-track"><span class="mp-fill" data-width="80%"></span></span>
+                <span class="mp-pct">80%</span>
+              </li>
+              <li class="mini-project">
+                <span class="mp-name">Fitness plan</span>
+                <span class="mp-track"><span class="mp-fill" data-width="45%"></span></span>
+                <span class="mp-pct">45%</span>
+              </li>
+              <li class="mini-project">
+                <span class="mp-name">Startup pitch</span>
+                <span class="mp-track"><span class="mp-fill" data-width="20%"></span></span>
+                <span class="mp-pct">20%</span>
+              </li>
+            </ul>
+            <p class="card-nudge">Projects need next steps, not anxiety.</p>
+          </article>
+
+          <!-- E. HABITS CARD -->
+          <article class="card card-habits reveal" aria-labelledby="habits-title">
+            <header class="card-head">
+              <span class="card-ico ico-green" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4L12 14l-3-3"/></svg>
+              </span>
+              <h3 id="habits-title">Habits</h3>
+              <span class="card-tag tag-green" id="habitCount">4 / 7 today</span>
+            </header>
+            <ul class="habit-list">
+              <!-- data-streak feeds the small streak label; JS toggles .done -->
+              <li><button class="habit done" type="button" aria-pressed="true"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Prayer</span><span class="h-streak">12d</span></button></li>
+              <li><button class="habit done" type="button" aria-pressed="true"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Workout</span><span class="h-streak">4d</span></button></li>
+              <li><button class="habit" type="button" aria-pressed="false"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Arabic</span><span class="h-streak">2d</span></button></li>
+              <li><button class="habit done" type="button" aria-pressed="true"><span class="h-mark" aria-hidden="true"></span><span class="h-name">No cigarette</span><span class="h-streak">9d</span></button></li>
+              <li><button class="habit done" type="button" aria-pressed="true"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Water</span><span class="h-streak">6d</span></button></li>
+              <li><button class="habit" type="button" aria-pressed="false"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Reading</span><span class="h-streak">1d</span></button></li>
+              <li><button class="habit" type="button" aria-pressed="false"><span class="h-mark" aria-hidden="true"></span><span class="h-name">Sleep on time</span><span class="h-streak">3d</span></button></li>
+            </ul>
+          </article>
+
+          <!-- F. HEALTH SNAPSHOT CARD -->
+          <article class="card card-health reveal" aria-labelledby="health-title">
+            <header class="card-head">
+              <span class="card-ico ico-green" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              </span>
+              <h3 id="health-title">Health Snapshot</h3>
+              <span class="card-tag tag-green">Stable</span>
+            </header>
+            <div class="health-grid">
+              <div class="h-stat"><span class="hs-label">Sleep</span><strong>6h 20m</strong></div>
+              <div class="h-stat"><span class="hs-label">Wake time</span><strong>07:10</strong></div>
+              <div class="h-stat"><span class="hs-label">Weight</span><strong>78.4 kg</strong></div>
+              <div class="h-stat"><span class="hs-label">Workout</span><strong>Push day ✓</strong></div>
+              <div class="h-stat"><span class="hs-label">Water</span><strong>1.8 L</strong></div>
+              <div class="h-stat"><span class="hs-label">Energy</span><strong>7/10</strong></div>
+              <div class="h-stat"><span class="hs-label">Cigarettes</span><strong class="text-green">0</strong></div>
+              <div class="h-stat"><span class="hs-label">Symptoms</span><strong>None</strong></div>
+            </div>
+            <p class="card-nudge">Track the small things before they become big problems.</p>
+          </article>
+
+          <!-- G. CALENDAR / DEADLINES CARD -->
+          <article class="card card-calendar reveal" aria-labelledby="cal-title">
+            <header class="card-head">
+              <span class="card-ico ico-blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+              </span>
+              <h3 id="cal-title">Calendar &amp; Deadlines</h3>
+              <span class="card-tag tag-blue">Today</span>
+            </header>
+            <ul class="agenda">
+              <li class="agenda-item urgent">
+                <span class="ag-time">10:00</span>
+                <span class="ag-line" aria-hidden="true"></span>
+                <div class="ag-body"><strong>Embassy appointment</strong><small>Bring passport + proof of funds</small></div>
+              </li>
+              <li class="agenda-item">
+                <span class="ag-time">14:00</span>
+                <span class="ag-line" aria-hidden="true"></span>
+                <div class="ag-body"><strong>Thesis meeting</strong><small>Chapter 2 feedback</small></div>
+              </li>
+              <li class="agenda-item">
+                <span class="ag-time">20:00</span>
+                <span class="ag-line" aria-hidden="true"></span>
+                <div class="ag-body"><strong>Gym</strong><small>Push day</small></div>
+              </li>
+            </ul>
+            <div class="deadline-strip">
+              <span class="chip chip-amber">Rent — Jun 12</span>
+              <span class="chip chip-amber">Visa biometrics — Jun 16</span>
+              <span class="chip">Flight — Jul 02</span>
+            </div>
+          </article>
+
+          <!-- H. PEOPLE FOLLOW-UP CARD -->
+          <article class="card card-people reveal" aria-labelledby="people-title">
+            <header class="card-head">
+              <span class="card-ico ico-amber" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </span>
+              <h3 id="people-title">People Follow-ups</h3>
+              <span class="card-tag tag-amber">3 open</span>
+            </header>
+            <ul class="people-list">
+              <li class="person">
+                <span class="avatar" style="--hue:160" aria-hidden="true">S</span>
+                <div class="person-body"><strong>Reply to Salim</strong><small>About the visa letter — promised by today</small></div>
+                <span class="follow-tag">Reply</span>
+              </li>
+              <li class="person">
+                <span class="avatar" style="--hue:215" aria-hidden="true">L</span>
+                <div class="person-body"><strong>Thank Lena</strong><small>Shared your post with her network</small></div>
+                <span class="follow-tag">Thanks</span>
+              </li>
+              <li class="person">
+                <span class="avatar" style="--hue:265" aria-hidden="true">D</span>
+                <div class="person-body"><strong>Follow up with developer</strong><small>Payment flow estimate — 3 days quiet</small></div>
+                <span class="follow-tag">Nudge</span>
+              </li>
+            </ul>
+            <p class="card-nudge">Small follow-ups build big trust.</p>
+          </article>
+
+          <!-- I. DOCUMENTS / RECEIPTS CARD -->
+          <article class="card card-docs reveal" aria-labelledby="docs-title">
+            <header class="card-head">
+              <span class="card-ico ico-blue" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <h3 id="docs-title">Documents &amp; Receipts</h3>
+              <span class="card-tag tag-blue">12 saved</span>
+            </header>
+            <p class="docs-intro">Receipts, tickets, IDs, transfer proofs, screenshots — findable in seconds, not in panic.</p>
+            <div class="doc-chips">
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M15 8h4M15 12h4M5 18h14"/></svg> Passport</span>
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Rent receipt</span>
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg> Flight ticket</span>
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/></svg> Insurance PDF</span>
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> Embassy proof</span>
+              <span class="doc-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="3"/><path d="M2 10h20"/></svg> Bank transfer</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4. DAILY FLOW SECTION — vertical timeline of the day
+    ============================================================ -->
+    <section class="flow section" id="flow">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>How your day flows</h2>
+          <p>Four light touches a day. No hour-long reviews. No guilt.</p>
+        </div>
+
+        <ol class="timeline">
+          <li class="t-step reveal">
+            <span class="t-node node-amber" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </span>
+            <div class="t-card">
+              <span class="t-time">Morning</span>
+              <p>Choose your must-do tasks and check today's money limit.</p>
+            </div>
+          </li>
+          <li class="t-step reveal">
+            <span class="t-node node-blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </span>
+            <div class="t-card">
+              <span class="t-time">Midday</span>
+              <p>Capture spending, notes, and unexpected tasks before they disappear.</p>
+            </div>
+          </li>
+          <li class="t-step reveal">
+            <span class="t-node node-purple" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
+            </span>
+            <div class="t-card">
+              <span class="t-time">Evening</span>
+              <p>Update projects, habits, health, and tomorrow's deadlines.</p>
+            </div>
+          </li>
+          <li class="t-step reveal">
+            <span class="t-node node-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+            </span>
+            <div class="t-card">
+              <span class="t-time">Anytime</span>
+              <p>Save documents, receipts, addresses, and follow-ups in seconds.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         5. PSYCHOLOGY SECTION
+    ============================================================ -->
+    <section class="psych section" id="psychology">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Designed around how real people actually behave.</h2>
+          <p>Not how productivity gurus pretend they behave.</p>
+        </div>
+        <div class="psych-grid">
+          <article class="psy-card reveal">
+            <span class="psy-ico ico-green" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>
+            </span>
+            <h3>Low friction</h3>
+            <p>Add things quickly before motivation disappears.</p>
+          </article>
+          <article class="psy-card reveal">
+            <span class="psy-ico ico-purple" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+            </span>
+            <h3>Visible progress</h3>
+            <p>Projects move faster when the next step is obvious.</p>
+          </article>
+          <article class="psy-card reveal">
+            <span class="psy-ico ico-amber" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.9H22l-5.8 4.2 2.2 6.9-6.4-4.3-6.4 4.3 2.2-6.9L2 8.9h7.6z"/></svg>
+            </span>
+            <h3>Priority clarity</h3>
+            <p>Must, should, and could tasks prevent fake productivity.</p>
+          </article>
+          <article class="psy-card reveal">
+            <span class="psy-ico ico-coral" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/></svg>
+            </span>
+            <h3>Money awareness</h3>
+            <p>Small daily spending becomes visible before it becomes regret.</p>
+          </article>
+          <article class="psy-card reveal">
+            <span class="psy-ico ico-blue" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            </span>
+            <h3>Life admin memory</h3>
+            <p>Documents, follow-ups, and receipts stay findable.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         6. FEATURE GRID
+    ============================================================ -->
+    <section class="features section" id="features">
+      <div class="container">
+        <div class="section-head reveal">
+          <h2>Nine essentials. Nothing else.</h2>
+          <p>Every card earns its place on your screen.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feat reveal">
+            <span class="feat-ico ico-green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="3"/><circle cx="12" cy="12.5" r="3"/><path d="M2 10h20"/></svg></span>
+            <h3>Money tracking</h3>
+            <p>See where today's euros actually went — before the month ends.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-amber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
+            <h3>To-do priorities</h3>
+            <p>Must, should, could — so three real tasks beat thirty fake ones.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span>
+            <h3>Quick notes</h3>
+            <p>Catch ideas, names, and addresses in the five seconds they exist.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-purple" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+            <h3>Project progress</h3>
+            <p>Every project keeps a percentage and a next step — always.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.1V12a10 10 0 1 1-5.9-9.1"/><path d="M22 4L12 14l-3-3"/></svg></span>
+            <h3>Habit checkmarks</h3>
+            <p>One tap a day. Streaks that inform, not guilt-trip.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-green" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+            <h3>Health snapshot</h3>
+            <p>Sleep, water, energy — patterns surface before problems do.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+            <h3>Calendar &amp; deadlines</h3>
+            <p>Visa dates, bills, classes — nothing expires unnoticed.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-amber" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+            <h3>People follow-ups</h3>
+            <p>Promises, thank-yous, and nudges — kept, not forgotten.</p>
+          </article>
+          <article class="feat reveal">
+            <span class="feat-ico ico-blue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span>
+            <h3>Documents &amp; receipts</h3>
+            <p>The receipt you'll need in March, saved in three seconds today.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         7. MOBILE APP STYLE PREVIEW — phone mockup
+    ============================================================ -->
+    <section class="mobile section" id="mobile">
+      <div class="container mobile-grid">
+        <div class="mobile-copy reveal">
+          <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span> Pocket-sized</p>
+          <h2>Your whole day, one thumb away.</h2>
+          <p>The same command center, shaped for the moments between moments — the queue, the tram, the elevator.</p>
+          <ul class="mobile-points">
+            <li><span class="point-dot dot-green" aria-hidden="true"></span> Capture an expense in under four seconds.</li>
+            <li><span class="point-dot dot-blue" aria-hidden="true"></span> Check must-dos without opening five apps.</li>
+            <li><span class="point-dot dot-purple" aria-hidden="true"></span> Tick habits while the kettle boils.</li>
+          </ul>
+        </div>
+
+        <!-- Phone mockup -->
+        <div class="phone-wrap reveal">
+          <div class="phone" role="img" aria-label="DayVault mobile dashboard preview">
+            <div class="phone-notch" aria-hidden="true"></div>
+            <div class="phone-screen">
+              <div class="ph-header">
+                <div>
+                  <small>Tuesday, Jun 9</small>
+                  <strong>Good morning, Ali</strong>
+                </div>
+                <span class="ph-avatar" aria-hidden="true">A</span>
+              </div>
+
+              <!-- Today score ring -->
+              <div class="ph-score">
+                <div class="score-ring" style="--score:78">
+                  <span class="score-num">78</span>
+                </div>
+                <div class="score-text">
+                  <strong>Today score</strong>
+                  <small>Solid. Two must-dos left.</small>
+                </div>
+              </div>
+
+              <!-- Spent / saved row -->
+              <div class="ph-money">
+                <div class="phm spent"><small>Spent</small><strong>€18.50</strong></div>
+                <div class="phm saved"><small>Saved</small><strong>+€7.00</strong></div>
+              </div>
+
+              <!-- Must-do tasks -->
+              <div class="ph-block">
+                <small class="ph-block-title">Must do</small>
+                <div class="ph-task"><span class="ph-tick done" aria-hidden="true"></span> Submit visa form</div>
+                <div class="ph-task"><span class="ph-tick" aria-hidden="true"></span> Pay rent</div>
+                <div class="ph-task"><span class="ph-tick" aria-hidden="true"></span> Gym session</div>
+              </div>
+
+              <!-- Project progress -->
+              <div class="ph-block">
+                <small class="ph-block-title">Vanera App Launch</small>
+                <div class="ph-bar"><span style="width:68%"></span></div>
+                <small class="ph-bar-meta">68% · next: payment flow</small>
+              </div>
+
+              <!-- Habit row -->
+              <div class="ph-habits" aria-label="Habits">
+                <span class="ph-habit done">🕌</span>
+                <span class="ph-habit done">🏋️</span>
+                <span class="ph-habit">📖</span>
+                <span class="ph-habit done">🚭</span>
+                <span class="ph-habit done">💧</span>
+              </div>
+
+              <button class="ph-add" type="button">+ Add quick note</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         8. CALL TO ACTION
+    ============================================================ -->
+    <section class="cta section" id="cta">
+      <div class="container">
+        <div class="cta-card reveal">
+          <div class="cta-glow" aria-hidden="true"></div>
+          <h2>Stop trying to remember your whole life.</h2>
+          <p>Build a small daily system. Save your brain for thinking.</p>
+          <a href="#dashboard" class="btn btn-light" id="ctaBtn">
+            Open Demo Dashboard
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <a class="nav-logo" href="#top">
+        <span class="logo-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M12 8v1.5M12 14.5V16M8 12h1.5M14.5 12H16"/></svg>
+        </span>
+        <span class="logo-text">DayVault</span>
+      </a>
+      <p>DayVault — Personal command center for everyday life.</p>
+      <small>A clear day starts with a clear capture system.</small>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       FLOATING QUICK ADD BUTTON + MODAL
+       The FAB opens a modal with six capture options. UI only —
+       nothing is persisted (demo).
+  ============================================================ -->
+  <button class="fab" id="quickAddBtn" type="button" aria-haspopup="dialog" aria-controls="quickAddModal" aria-label="Quick add">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <div class="modal-overlay" id="quickAddModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal">
+      <header class="modal-head">
+        <h3 id="modalTitle">Quick add</h3>
+        <button class="modal-close" id="modalCloseBtn" type="button" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </header>
+      <p class="modal-sub">Capture it now. Sort it never.</p>
+
+      <!-- Step 1: choose what to add -->
+      <div class="modal-options" id="modalOptions">
+        <button class="m-opt" type="button" data-kind="expense"><span class="m-ico ico-green" aria-hidden="true">€</span> Add expense</button>
+        <button class="m-opt" type="button" data-kind="task"><span class="m-ico ico-amber" aria-hidden="true">✓</span> Add task</button>
+        <button class="m-opt" type="button" data-kind="note"><span class="m-ico ico-blue" aria-hidden="true">✎</span> Add note</button>
+        <button class="m-opt" type="button" data-kind="project"><span class="m-ico ico-purple" aria-hidden="true">◆</span> Add project</button>
+        <button class="m-opt" type="button" data-kind="document"><span class="m-ico ico-blue" aria-hidden="true">⎙</span> Add document</button>
+        <button class="m-opt" type="button" data-kind="follow-up"><span class="m-ico ico-amber" aria-hidden="true">☺</span> Add follow-up</button>
+      </div>
+
+      <!-- Step 2: tiny demo form (shown after picking a kind) -->
+      <form class="modal-form" id="modalForm" hidden>
+        <label class="m-field">
+          <span id="formLabel">What is it?</span>
+          <input type="text" id="formInput" placeholder="Type here…" autocomplete="off" />
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="formBackBtn">Back</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        </div>
+      </form>
+
+      <!-- Confirmation state -->
+      <div class="modal-done" id="modalDone" hidden>
+        <span class="done-ring" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <p>Captured. Your brain can let go now.</p>
+        <small>(Demo — nothing is stored.)</small>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
