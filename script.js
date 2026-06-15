@@ -70,45 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
     lastAdded = null;
   }
 
-  /* ---------- 2. AUTH + PER-USER DATA LAYER ----------
-     Demo authentication: a small credential store with hashed
-     passwords lives in localStorage. Each user's app data is
-     stored under their own key (calme-data-<username>), so users
-     are isolated from each other. Replace with a real backend
-     (bcrypt + HTTPS) before sharing sensitive data. */
-  const USERS_KEY   = "calme-users-v1";
-  const SESSION_KEY = "calme-session-v1";
-  const LEGACY_KEY  = "dayvault-demo-v1";       // pre-auth single-user data
-  const dataKey = (u) => "calme-data-" + u;
-
-  let currentUser = null;   // the logged-in account
-  let viewUser = null;      // whose data is on screen (admin can switch)
+  /* ---------- 2. DATA LAYER ----------
+     Single-user demo: all dashboard data lives under one localStorage
+     key. (Auth/multi-user was removed.) */
+  const DB_KEY = "calme-data-v1";
   let db = null;            // active dataset
-
-  // SHA-256 (salted with the username) via Web Crypto; tiny
-  // non-cryptographic fallback for non-secure contexts (file://).
-  async function hashPass(username, password) {
-    const text = `calme|${username}|${password}`;
-    if (window.crypto && crypto.subtle) {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-    }
-    let h = 0x811c9dc5;
-    for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
-    return "f" + h.toString(16);
-  }
-
-  const getUsers = () => { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch (e) { return []; } };
-  const setUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
-
-  // First run: seed the demo accounts (one admin, one standard user)
-  async function ensureUsers() {
-    if (getUsers().length) return;
-    setUsers([
-      { username: "ali",  hash: await hashPass("ali", "vault2026"), role: "admin" },
-      { username: "sara", hash: await hashPass("sara", "calm2026"), role: "user" }
-    ]);
-  }
 
   function seedData() {
     const t = todayISO();
@@ -221,8 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(DB_KEY, JSON.stringify(db));
     generateDailyFlow(); // the coach updates whenever data changes
   }
-
-  db = loadData();
 
   /* ---------- 3. RENDER FUNCTIONS ---------- */
 
@@ -1331,6 +1295,7 @@ document.addEventListener("DOMContentLoaded", () => {
   $$(".reveal").forEach((el) => revealObserver.observe(el));
 
   /* ---------- 8. BOOT ---------- */
+  db = loadData();
   $("#evDate").value = todayISO();
   $("#medStart").value = todayISO();
   $("#medEnd").disabled = true;          // "Ongoing" starts checked
