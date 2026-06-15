@@ -1,0 +1,31 @@
+{
+  "name": "Calm-e Daily",
+  "short_name": "Calm-e",
+  "description": "Your daily life, collected and calm. Finances, goals, wellbeing, and life admin in one quiet dashboard.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0e1626",
+  "background_color": "#faf7f2",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

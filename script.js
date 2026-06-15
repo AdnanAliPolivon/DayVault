@@ -70,8 +70,45 @@ document.addEventListener("DOMContentLoaded", () => {
     lastAdded = null;
   }
 
-  /* ---------- 2. DATA LAYER ---------- */
-  const DB_KEY = "dayvault-demo-v1";
+  /* ---------- 2. AUTH + PER-USER DATA LAYER ----------
+     Demo authentication: a small credential store with hashed
+     passwords lives in localStorage. Each user's app data is
+     stored under their own key (calme-data-<username>), so users
+     are isolated from each other. Replace with a real backend
+     (bcrypt + HTTPS) before sharing sensitive data. */
+  const USERS_KEY   = "calme-users-v1";
+  const SESSION_KEY = "calme-session-v1";
+  const LEGACY_KEY  = "dayvault-demo-v1";       // pre-auth single-user data
+  const dataKey = (u) => "calme-data-" + u;
+
+  let currentUser = null;   // the logged-in account
+  let viewUser = null;      // whose data is on screen (admin can switch)
+  let db = null;            // active dataset
+
+  // SHA-256 (salted with the username) via Web Crypto; tiny
+  // non-cryptographic fallback for non-secure contexts (file://).
+  async function hashPass(username, password) {
+    const text = `calme|${username}|${password}`;
+    if (window.crypto && crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    let h = 0x811c9dc5;
+    for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+    return "f" + h.toString(16);
+  }
+
+  const getUsers = () => { try { return JSON.parse(localStorage.getItem(USERS_KEY)) || []; } catch (e) { return []; } };
+  const setUsers = (list) => localStorage.setItem(USERS_KEY, JSON.stringify(list));
+
+  // First run: seed the demo accounts (one admin, one standard user)
+  async function ensureUsers() {
+    if (getUsers().length) return;
+    setUsers([
+      { username: "ali",  hash: await hashPass("ali", "vault2026"), role: "admin" },
+      { username: "sara", hash: await hashPass("sara", "calm2026"), role: "user" }
+    ]);
+  }
 
   function seedData() {
     const t = todayISO();
@@ -79,6 +116,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const fastEnd = new Date(Date.now() - 24 * 3600000);
     return {
       budget: { daily: 30 },
+      timeplan: {
+        restHours: 8,
+        workHours: 8,
+        tasks: [
+          { id: uid(), name: "Arabic learning", mins: 30 },
+          { id: uid(), name: "Gym", mins: 60 },
+          { id: uid(), name: "Vanera work", mins: 90 },
+          { id: uid(), name: "Prayer / reflection", mins: 30 }
+        ]
+      },
       expenses: [
         { id: uid(), title: "Groceries", amount: 8.9, category: "Food", waste: false, date: t },
         { id: uid(), title: "Tram ticket", amount: 4.8, category: "Transport", waste: false, date: t },
@@ -151,6 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
     ["expenses","tasks","projects","notes","diary","docs","events","follows","food","meds","fasts"]
       .forEach((k) => { if (!Array.isArray(d[k])) d[k] = (k === "food" || k === "meds" || k === "fasts") ? [] : defaults[k]; });
     if (!d.budget || typeof d.budget.daily !== "number") d.budget = { daily: 30 };
+    if (!d.timeplan || typeof d.timeplan !== "object") d.timeplan = defaults.timeplan;
+    if (typeof d.timeplan.restHours !== "number") d.timeplan.restHours = 8;
+    if (typeof d.timeplan.workHours !== "number") d.timeplan.workHours = 8;
+    if (!Array.isArray(d.timeplan.tasks)) d.timeplan.tasks = [];
     if (!d.health) d.health = defaults.health;
     if (d.health.supps === undefined) d.health.supps = "";
     return d;
@@ -171,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
     generateDailyFlow(); // the coach updates whenever data changes
   }
 
-  let db = loadData();
+  db = loadData();
 
   /* ---------- 3. RENDER FUNCTIONS ---------- */
 
@@ -490,6 +541,140 @@ document.addEventListener("DOMContentLoaded", () => {
     flashNew($("#followList"));
   }
 
+  /* --- Day Planner ---
+     One circle = one day. Rest and Work are the fixed base and are
+     drawn as compressed grouped wedges (they never dominate the
+     circle, however many hours they hold). Play always occupies the
+     dominant 66% of the dial and is divided into 30-minute slices the
+     user fills with flexible tasks. */
+  const DAY = {
+    cx: 160, cy: 160, rO: 150, rI: 92,
+    playFrac: 0.66,          // Play always owns this share of the circle
+    baseFrac: 0.34,          // Rest + Work share the rest (compressed)
+    palette: ["#7857d6", "#3a6ff2", "#178f8f", "#119d6c", "#d99114", "#c2566f", "#2c4f9e", "#b06f33"]
+  };
+
+  const fmtMins = (m) => {
+    m = Math.max(0, Math.round(m));
+    const h = Math.floor(m / 60), mm = m % 60;
+    if (h && mm) return `${h}h ${mm}m`;
+    if (h) return `${h}h`;
+    return `${mm}m`;
+  };
+  const fmtHrs = (h) => (Number.isInteger(h) ? `${h}h` : `${h}h`);
+
+  // Donut segment between two angles (degrees, clockwise, 0° = 3 o'clock)
+  function donutSeg(a0, a1) {
+    const { cx, cy, rO, rI } = DAY;
+    const pt = (r, a) => { const rad = a * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; };
+    const large = (a1 - a0) > 180 ? 1 : 0;
+    const [x0o, y0o] = pt(rO, a0), [x1o, y1o] = pt(rO, a1);
+    const [x1i, y1i] = pt(rI, a1), [x0i, y0i] = pt(rI, a0);
+    return `M${x0o.toFixed(2)} ${y0o.toFixed(2)} A${rO} ${rO} 0 ${large} 1 ${x1o.toFixed(2)} ${y1o.toFixed(2)} `
+         + `L${x1i.toFixed(2)} ${y1i.toFixed(2)} A${rI} ${rI} 0 ${large} 0 ${x0i.toFixed(2)} ${y0i.toFixed(2)} Z`;
+  }
+
+  function renderDayPlanner() {
+    const tp = db.timeplan;
+    const rest = tp.restHours, work = tp.workHours;
+    let play = Math.round((24 - rest - work) * 10) / 10;
+    if (play < 0) play = 0;
+    const playSlices = Math.round(play * 2);
+    const capMins = playSlices * 30;
+    const tasks = tp.tasks;
+    const plannedMins = tasks.reduce((s, t) => s + (t.mins || 0), 0);
+
+    // Map each play slice → index of the task occupying it (or -1).
+    const sliceTask = new Array(playSlices).fill(-1);
+    let cursor = 0;
+    tasks.forEach((t, i) => {
+      const n = Math.round((t.mins || 0) / 30);
+      for (let k = 0; k < n && cursor < playSlices; k++) sliceTask[cursor++] = i;
+    });
+
+    // --- Build the dial ---
+    const baseHrs = rest + work;
+    const restFrac = baseHrs > 0 ? DAY.baseFrac * (rest / baseHrs) : 0;
+    const workFrac = baseHrs > 0 ? DAY.baseFrac * (work / baseHrs) : 0;
+    const playAngle = (playSlices > 0 ? DAY.playFrac : DAY.playFrac + DAY.baseFrac) * 360;
+    const baseAngle = 360 - playAngle;
+
+    // Center Play around the top (12 o'clock = -90°).
+    const playStart = -90 - playAngle / 2;
+    let parts = [];
+
+    if (playSlices > 0) {
+      const slice = playAngle / playSlices;
+      const gap = Math.min(slice * 0.16, 1.1); // breathing room between slices
+      for (let i = 0; i < playSlices; i++) {
+        const a0 = playStart + i * slice + gap / 2;
+        const a1 = playStart + (i + 1) * slice - gap / 2;
+        const ti = sliceTask[i];
+        const filled = ti >= 0;
+        const fill = filled ? DAY.palette[ti % DAY.palette.length] : "rgba(120,87,214,0.10)";
+        const tid = filled ? tasks[ti].id : "";
+        parts.push(
+          `<path class="slice slice-play${filled ? " is-filled" : ""}" d="${donutSeg(a0, a1)}" `
+          + `fill="${fill}"${tid ? ` data-ti="${tid}"` : ""}>`
+          + `<title>${filled ? esc(tasks[ti].name) : "Free Play time"} · 30 min</title></path>`
+        );
+      }
+    }
+
+    // Base block (Work then Rest) fills the remaining bottom arc.
+    let a = playStart + playAngle; // continue clockwise from play's end
+    const baseGap = baseAngle > 6 ? 1.0 : 0;
+    if (workFrac > 0) {
+      const span = workFrac * 360;
+      parts.push(`<path class="slice slice-work" d="${donutSeg(a + baseGap / 2, a + span - baseGap / 2)}" fill="var(--blue)"><title>Work · ${fmtHrs(work)}</title></path>`);
+      a += span;
+    }
+    if (restFrac > 0) {
+      const span = restFrac * 360;
+      parts.push(`<path class="slice slice-rest" d="${donutSeg(a + baseGap / 2, a + span - baseGap / 2)}" fill="var(--lav)"><title>Rest · ${fmtHrs(rest)}</title></path>`);
+    }
+
+    $("#dayDial").innerHTML = parts.join("");
+
+    // --- Readouts ---
+    const leftMins = capMins - plannedMins;
+    $("#dialPlayLeft").textContent = playSlices === 0 ? "0h" : fmtMins(Math.max(0, leftMins));
+    $("#restVal").textContent = fmtHrs(rest);
+    $("#workVal").textContent = fmtHrs(work);
+    $("#playVal").textContent = fmtHrs(play);
+    $("#restSlider").value = rest;
+    $("#workSlider").value = work;
+
+    const pct = capMins > 0 ? Math.min(100, (plannedMins / capMins) * 100) : 0;
+    $("#playMeterFill").style.width = pct + "%";
+
+    const over = plannedMins > capMins;
+    $("#playHint").innerHTML = over
+      ? `<span class="day-overflow">Over by ${fmtMins(plannedMins - capMins)}</span> · trim a task or add Play time`
+      : `${fmtMins(leftMins)} free of ${fmtHrs(play)} Play`;
+
+    const usedSlices = Math.round(plannedMins / 30);
+    const cap = $("#dayCap");
+    cap.textContent = `${usedSlices} / ${playSlices} slices`;
+    cap.classList.toggle("day-overflow", over);
+
+    // --- Task rows ---
+    let running = 0;
+    $("#dayTaskList").innerHTML = tasks.map((t, i) => {
+      const fits = running + Math.round(t.mins / 30) <= playSlices;
+      running += Math.round(t.mins / 30);
+      const color = DAY.palette[i % DAY.palette.length];
+      return `<li class="day-task-item" data-id="${t.id}">
+        <span class="dt-swatch" style="background:${color}"></span>
+        <span class="dt-text">
+          <span class="dt-name">${esc(t.name)}</span>
+          <span class="dt-dur${fits ? "" : " day-overflow"}">${fmtMins(t.mins)}${fits ? "" : " · no Play room"}</span>
+        </span>
+        <button class="dt-del" data-del type="button" aria-label="Remove task">×</button>
+      </li>`;
+    }).join("");
+  }
+
   /* --- Summary strip + clarity score --- */
   function renderSummary() {
     const t = todayISO();
@@ -517,7 +702,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderExpenses(); renderTasks(); renderProjects(); renderNotes();
     renderDiary(); renderDocuments(); renderHealth(); renderFood();
     renderMeds(); renderFasting(); renderEvents(); renderFollowUps();
-    renderSummary(); generateDailyFlow();
+    renderDayPlanner(); renderSummary(); generateDailyFlow();
   }
 
   /* ---------- 4. FORM HANDLERS & LIST ACTIONS ---------- */
@@ -1073,6 +1258,63 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       target.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+  });
+
+  /* --- Day Planner interactions --- */
+  // Sliders adjust Rest/Work; Play absorbs the difference. Clamp so
+  // Rest + Work never exceeds 24h (Play floors at 0).
+  function setDayHours(which, value) {
+    const tp = db.timeplan;
+    value = Math.max(0, Math.round(value * 2) / 2); // snap to 30-min steps
+    const other = which === "rest" ? tp.workHours : tp.restHours;
+    if (value + other > 24) value = 24 - other;
+    if (which === "rest") tp.restHours = value; else tp.workHours = value;
+    renderDayPlanner();          // live feedback while dragging
+  }
+  $("#restSlider").addEventListener("input", (e) => setDayHours("rest", parseFloat(e.target.value)));
+  $("#workSlider").addEventListener("input", (e) => setDayHours("work", parseFloat(e.target.value)));
+  $("#restSlider").addEventListener("change", saveData);
+  $("#workSlider").addEventListener("change", saveData);
+
+  function addDayTask(name, mins) {
+    name = String(name || "").trim();
+    mins = parseInt(mins, 10);
+    if (!name || !mins) return;
+    db.timeplan.tasks.push({ id: uid(), name, mins });
+    saveData();
+    renderDayPlanner();
+  }
+
+  $("#dayTaskForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    addDayTask($("#dayTaskName").value, $("#dayTaskMins").value);
+    $("#dayTaskName").value = "";
+    $("#dayTaskName").focus();
+  });
+
+  $("#dayChips").addEventListener("click", (e) => {
+    const chip = e.target.closest(".day-chip");
+    if (!chip) return;
+    addDayTask(chip.dataset.name, chip.dataset.mins);
+  });
+
+  // Remove a task from the list…
+  $("#dayTaskList").addEventListener("click", (e) => {
+    if (!e.target.closest("[data-del]")) return;
+    const id = e.target.closest("[data-id]").dataset.id;
+    db.timeplan.tasks = db.timeplan.tasks.filter((t) => t.id !== id);
+    saveData();
+    renderDayPlanner();
+  });
+
+  // …or by clicking the slice it occupies in the dial.
+  $("#dayDial").addEventListener("click", (e) => {
+    const slice = e.target.closest("[data-ti]");
+    if (!slice) return;
+    const id = slice.dataset.ti;
+    db.timeplan.tasks = db.timeplan.tasks.filter((t) => t.id !== id);
+    saveData();
+    renderDayPlanner();
   });
 
   /* ---------- 7. SCROLL-REVEAL ---------- */

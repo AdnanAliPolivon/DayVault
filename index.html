@@ -6,6 +6,16 @@
   <meta name="description" content="Calm-e Daily — your daily life, collected and calm. Finances, goals, wellbeing, and life admin in one quiet dashboard." />
   <title>Calm-e Daily — Your daily life, collected and calm.</title>
 
+  <!-- PWA: manifest, theme color, iOS install support -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0e1626" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Calm-e" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="icon" type="image/png" href="icon-192.png" />
+
   <!-- Google Fonts: Sora (display) + Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -13,7 +23,40 @@
 
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="locked">
+
+  <!-- ============================================================
+       LOGIN SCREEN
+       Shown while body has .locked; the app is hidden until a
+       valid session exists. Demo auth: credentials are verified
+       against hashed entries in localStorage (replace with a real
+       backend + bcrypt when self-hosting).
+  ============================================================ -->
+  <div class="auth-screen" id="authScreen">
+    <div class="hero-glow glow-a" aria-hidden="true"></div>
+    <div class="hero-glow glow-b" aria-hidden="true"></div>
+    <div class="auth-card">
+      <span class="logo-mark auth-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M12 8v1.5M12 14.5V16M8 12h1.5M14.5 12H16"/></svg>
+      </span>
+      <h1 class="auth-title">Calm-e Daily</h1>
+      <p class="auth-sub">Personal dashboard. Only for authorized users.</p>
+      <form class="auth-form" id="loginForm">
+        <input class="input" type="text" id="loginUser" placeholder="Username" autocomplete="username" required />
+        <input class="input" type="password" id="loginPass" placeholder="Password" autocomplete="current-password" required />
+        <p class="auth-error" id="loginError" hidden>Wrong username or password.</p>
+        <button class="btn btn-primary btn-block" type="submit">Log in</button>
+      </form>
+      <p class="auth-hint">Demo accounts — <strong>ali / vault2026</strong> (admin) · <strong>sara / calm2026</strong></p>
+    </div>
+  </div>
+
+  <!-- Impersonation banner: visible while the admin views another
+       user's dashboard -->
+  <div class="impersonate-bar" id="impersonateBar" hidden>
+    <span>Viewing as <strong id="impUser"></strong> — changes are saved to their account.</span>
+    <button id="exitImpBtn" type="button">Exit view</button>
+  </div>
 
   <!-- ============================================================
        STICKY GLASS NAVIGATION
@@ -29,15 +72,23 @@
       </a>
       <nav class="nav-links" aria-label="Primary">
         <a href="#home">Home</a>
+        <a href="#day">Day</a>
         <a href="#finances">Finances</a>
         <a href="#goals">Goals</a>
         <a href="#wellbeing">Wellbeing</a>
         <a href="#admin">Admin</a>
+        <a href="#admin-panel" class="admin-only">Admin Panel</a>
       </nav>
-      <button class="btn btn-primary btn-sm nav-cta" id="navQuickAdd" type="button">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-        Quick Add
-      </button>
+      <div class="nav-right">
+        <button class="btn btn-primary btn-sm nav-cta" id="navQuickAdd" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Quick Add
+        </button>
+        <span class="nav-username" id="navUser" title="Signed in"></span>
+        <button class="icon-btn" id="logoutBtn" type="button" aria-label="Log out" title="Log out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -168,6 +219,120 @@
               </form>
 
               <ul class="row-list" id="notesList"></ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DAY PLANNER — a visual life-balance planner.
+         The day is one circle: Rest and Work are the fixed base
+         (compressed), Play is the expanded, interactive space the
+         user actively designs. Basic unit = 30 minutes (48 slices).
+    ============================================================ -->
+    <section class="cat-section" id="day">
+      <div class="container">
+        <!-- Mini hero: deep violet → purple -->
+        <header class="mini-hero mh-purple reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Day Planner</h2>
+            <p>Rest and Work are your fixed base. Play is where you design your life.</p>
+          </div>
+        </header>
+
+        <div class="cat-grid cols-1">
+          <article class="card card-day reveal" id="card-day" aria-labelledby="day-title">
+            <span class="card-stripe stripe-purple" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-purple" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="day-title">Your 24 Hours</h3>
+                <small class="micro">One circle, one day. Shape the part that's yours.</small>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <div class="day-layout">
+
+                <!-- LEFT: the circular planner -->
+                <div class="day-chart-col">
+                  <div class="day-dial-wrap">
+                    <svg class="day-dial" id="dayDial" viewBox="0 0 320 320" role="img" aria-label="24-hour day planner">
+                      <!-- slices injected by script -->
+                    </svg>
+                    <div class="day-dial-center" aria-hidden="true">
+                      <span class="dial-center-value" id="dialPlayLeft">0h</span>
+                      <span class="dial-center-label">Play left</span>
+                    </div>
+                  </div>
+
+                  <!-- Rest / Work compressed controls + Play readout -->
+                  <div class="day-legend">
+                    <div class="dl-row dl-rest">
+                      <div class="dl-top">
+                        <span class="dl-key"><span class="dl-dot dot-rest"></span>Rest</span>
+                        <span class="dl-val" id="restVal">8h</span>
+                      </div>
+                      <input class="day-slider slider-rest" id="restSlider" type="range" min="4" max="12" step="0.5" value="8" aria-label="Rest hours" />
+                    </div>
+                    <div class="dl-row dl-work">
+                      <div class="dl-top">
+                        <span class="dl-key"><span class="dl-dot dot-work"></span>Work</span>
+                        <span class="dl-val" id="workVal">8h</span>
+                      </div>
+                      <input class="day-slider slider-work" id="workSlider" type="range" min="0" max="12" step="0.5" value="8" aria-label="Work hours" />
+                    </div>
+                    <div class="dl-row dl-play">
+                      <div class="dl-top">
+                        <span class="dl-key"><span class="dl-dot dot-play"></span>Play</span>
+                        <span class="dl-val text-purple" id="playVal">8h</span>
+                      </div>
+                      <div class="play-meter"><span id="playMeterFill"></span></div>
+                      <small class="micro" id="playHint">8h flexible · 0h planned</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- RIGHT: the task list -->
+                <div class="day-tasks-col">
+                  <form class="card-form day-task-form" id="dayTaskForm">
+                    <div class="form-row">
+                      <input class="input" type="text" id="dayTaskName" placeholder="e.g. Arabic learning…" required />
+                      <select class="input input-narrow" id="dayTaskMins" aria-label="Duration">
+                        <option value="30">30 min</option>
+                        <option value="60">60 min</option>
+                        <option value="90">90 min</option>
+                        <option value="120">2 hr</option>
+                        <option value="150">2.5 hr</option>
+                        <option value="180">3 hr</option>
+                      </select>
+                    </div>
+                    <button class="btn btn-primary btn-sm btn-block" type="submit">Add to Play</button>
+                  </form>
+
+                  <div class="day-chips" id="dayChips" role="toolbar" aria-label="Quick add">
+                    <button type="button" class="day-chip" data-name="Arabic learning" data-mins="30">Arabic 30m</button>
+                    <button type="button" class="day-chip" data-name="Gym" data-mins="60">Gym 60m</button>
+                    <button type="button" class="day-chip" data-name="Reading" data-mins="30">Reading 30m</button>
+                    <button type="button" class="day-chip" data-name="Vanera work" data-mins="90">Vanera 90m</button>
+                    <button type="button" class="day-chip" data-name="Prayer / reflection" data-mins="30">Prayer 30m</button>
+                  </div>
+
+                  <div class="day-tasks-head">
+                    <h4 class="sub-title">Play tasks</h4>
+                    <span class="day-cap" id="dayCap">0 / 0 slices</span>
+                  </div>
+                  <ul class="day-task-list" id="dayTaskList"></ul>
+                  <p class="day-empty" id="dayEmpty">No tasks yet — add one above to fill your Play time.</p>
+                </div>
+
+              </div>
             </div>
           </article>
         </div>
@@ -727,6 +892,83 @@
               </form>
 
               <ul class="row-list" id="followList"></ul>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ADMIN PANEL — accounts & oversight (admin role only;
+         hidden for standard users via body.is-admin CSS gate)
+    ============================================================ -->
+    <section class="cat-section admin-panel" id="admin-panel">
+      <div class="container">
+        <header class="mini-hero mh-ink reveal">
+          <span class="mh-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="M9.5 12l2 2 3.5-4"/></svg>
+          </span>
+          <div class="mh-text">
+            <h2>Admin Panel</h2>
+            <p>Accounts, oversight, and a master key — handle with care.</p>
+          </div>
+        </header>
+
+        <div class="cat-grid cols-2 admin-grid">
+
+          <!-- User management -->
+          <article class="card reveal" id="card-users" aria-labelledby="users-title">
+            <span class="card-stripe stripe-ink" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-ink" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="users-title">User Management</h3>
+                <small class="micro">Create, reset, remove. One admin — you.</small>
+              </div>
+              <span class="card-tag tag-blue" id="userCount">0 users</span>
+            </header>
+
+            <div class="card-body">
+              <form class="card-form" id="userForm">
+                <div class="form-row">
+                  <input class="input" type="text" id="newUser" placeholder="Username (a–z, 0–9)" autocomplete="off" required />
+                  <input class="input" type="password" id="newPass" placeholder="Password (min 4)" autocomplete="new-password" required />
+                </div>
+                <select class="input" id="newRole" aria-label="Role">
+                  <option value="user">Standard user</option>
+                  <option value="admin">Admin</option>
+                </select>
+                <p class="auth-error" id="userFormError" hidden></p>
+                <button class="btn btn-primary btn-sm btn-block" type="submit">Create Account</button>
+              </form>
+
+              <h4 class="sub-title">Existing users</h4>
+              <ul class="row-list" id="userList"></ul>
+
+              <p class="demo-note">Demo: credentials are hashed and stored in this browser. Move to a server with bcrypt before sharing real data.</p>
+            </div>
+          </article>
+
+          <!-- Data overview -->
+          <article class="card reveal" id="card-overview" aria-labelledby="overview-title">
+            <span class="card-stripe stripe-ink" aria-hidden="true"></span>
+            <header class="card-head">
+              <span class="card-ico ico-ink" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+              </span>
+              <div class="head-text">
+                <h3 id="overview-title">Data Overview</h3>
+                <small class="micro">High-level numbers, no private entries.</small>
+              </div>
+            </header>
+
+            <div class="card-body">
+              <div class="health-grid" id="adminStats"></div>
+              <h4 class="sub-title">Per user</h4>
+              <ul class="row-list" id="adminUserStats"></ul>
             </div>
           </article>
 
